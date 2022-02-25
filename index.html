@@ -18,7 +18,19 @@
       </div>
       <div class="section">
         <div class="projects-container">
-          <div id="projects-accordion">Projects</div>
+          <div class="wrapper">
+            <div id="projects-accordion">Projects</div>
+            <button id="add-project-btn"><i class="fa fa-plus"></i></button>
+            <form action="" id="project-form">
+              <h2>Add project</h2>
+              <label for="project">Name</label>
+              <input type="text" name="project" id="project">
+              <div class="button-container">
+                <button type="submit" id="submit-project-btn" disabled="true">Add</button>
+                <button type="button" id="cancel-project-btn">Cancel</button>
+              </div>
+            </form>
+          </div>
           <div id="projects"></div>
         </div>
       </div>
