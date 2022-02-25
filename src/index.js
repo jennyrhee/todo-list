@@ -4,8 +4,53 @@ import {Task, Project} from './task.js';
 ((doc) => {
   const _projects = [Project('My Tasks')];
 
-  const _toggleForm = () => {
-    doc.getElementById('task-form').classList.toggle('show');
+  const _toggleForm = (formId) => {
+    doc.getElementById(formId).classList.toggle('show');
+  }
+  const _disableBtnWhenEmpty = (id, btn) => {
+    doc.getElementById(id).addEventListener('keyup', (e) => {
+      if (e.target.value === '') {
+        doc.getElementById(btn).disabled = true;
+      } else {
+        doc.getElementById(btn).disabled = false;
+      }
+    });
+  }
+  const _createProject = (form) => {
+    const newProject = Project(form.elements['project'].value);
+    _projects.push(newProject);
+    return newProject;
+  }
+  const _createDiv = (obj, className) => {
+    const div = doc.createElement('div');
+    div.classList.add(className);
+    div.textContent = obj.getName();
+    return div
+  }
+  const _cancelForm = (id, form) => {
+    _toggleForm(id);
+    form.reset();
+  }
+  const _initProjectForm = () => {
+    doc.getElementById('add-project-btn').onclick = _toggleForm.bind(this, 'project-form');
+    _disableBtnWhenEmpty('project', 'submit-project-btn');
+
+    const form = doc.getElementById('project-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const newProject = _createProject(form);
+      const projectDiv = _createDiv(newProject, 'project')
+      doc.getElementById('projects').appendChild(projectDiv);
+      if (doc.getElementById('projects-accordion').classList.contains('is-open')) {
+        projectDiv.style.maxHeight = projectDiv.scrollHeight + 'px';
+      }
+      form.reset();
+    });
+
+    doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(
+      this, 'project-form', form
+    );
   }
   const _createTask = (form) => {
     const newTask = Task(
@@ -22,19 +67,19 @@ import {Task, Project} from './task.js';
 
     const check = doc.createElement('input');
     check.type = 'checkbox';
-    check.id = task.getTitle();
+    check.id = task.getName();
 
     const label = doc.createElement('label');
-    label.htmlFor = task.getTitle();
+    label.htmlFor = task.getName();
     label.classList.add('task');
-    label.textContent = task.getTitle();
+    label.textContent = task.getName();
 
     container.appendChild(check);
     container.appendChild(label);
     taskContainer.appendChild(container);
   }
-  const _initForm = () => {
-    doc.getElementById('add-task-btn').onclick = _toggleForm;
+  const _initTaskForm = () => {
+    doc.getElementById('add-task-btn').onclick = _toggleForm.bind(this, 'task-form');
 
     const form = doc.getElementById('task-form');
     form.addEventListener('submit', (e) => {
@@ -45,23 +90,14 @@ import {Task, Project} from './task.js';
       form.reset();
     });
 
-    doc.getElementById('task').addEventListener('keyup', (e) => {
-      if (e.target.value === '') {
-        doc.getElementById('submit-task-btn').disabled = true;
-      } else {
-        doc.getElementById('submit-task-btn').disabled = false;
-      }
-    });
-    doc.getElementById('cancel-task-btn').onclick = () => {
-      _toggleForm();
-      form.reset();
-    };
+    _disableBtnWhenEmpty('task', 'submit-task-btn');
+    doc.getElementById('cancel-task-btn').onclick = _cancelForm.bind(
+      this, 'task-form', form
+    );
   }
   const _addProjects = (projects) => {
     _projects.forEach((project) => {
-      let div = doc.createElement('div');
-      div.classList.add('project');
-      div.textContent = project.getName();
+      const div = _createDiv(project, 'project')
       projects.appendChild(div);
     });
   }
@@ -79,7 +115,8 @@ import {Task, Project} from './task.js';
   }
 
   (() => {
-    _initForm();
+    _initProjectForm();
+    _initTaskForm();
     _initAccordion();
   })();
 

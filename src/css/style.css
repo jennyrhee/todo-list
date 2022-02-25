@@ -17,11 +17,17 @@ a {
   display: flex;
   flex-direction: column;
   width: 15%;
+  padding: 1em;
 }
 
 .sidebar .section {
   display: flex;
   flex-direction: column;
+}
+
+.projects-container .wrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
 #projects-accordion {
@@ -47,6 +53,16 @@ a {
   transition: max-height 0.2s ease-in-out;
 }
 
+#project-form {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#add-project-btn,
 #add-task-btn {
   border: none;
   background-color: white;
@@ -63,6 +79,7 @@ a {
   flex-direction: column;
 }
 
+#project-form.show,
 #task-form.show {
   display: flex;
 }

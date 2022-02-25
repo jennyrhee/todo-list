@@ -1,9 +1,9 @@
-const Task = (title, description, dueDate, project, priority) => {
+const Task = (name, description, dueDate, project, priority) => {
   let _isCompleted = false;
 
-  const getTitle = () => title;
+  const getName = () => name;
   return {
-    getTitle
+    getName
   };
 }
 
