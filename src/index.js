@@ -34,14 +34,23 @@ import {Task, Project} from './task.js';
     taskContainer.appendChild(container);
   }
   const _initForm = () => {
-    const form = doc.getElementById('task-form');
     doc.getElementById('add-task-btn').onclick = _toggleForm;
+
+    const form = doc.getElementById('task-form');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const newTask = _createTask(form);
       _addTask(newTask, doc.querySelector('.task-container'));
       form.reset();
+    });
+
+    doc.getElementById('task').addEventListener('keyup', (e) => {
+      if (e.target.value === '') {
+        doc.getElementById('submit-task-btn').disabled = true;
+      } else {
+        doc.getElementById('submit-task-btn').disabled = false;
+      }
     });
     doc.getElementById('cancel-task-btn').onclick = () => {
       _toggleForm();
