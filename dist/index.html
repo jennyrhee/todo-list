@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>todo</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+  <header></header>
+
+  <div class="content">
+    <div class="sidebar">
+      <div class="section">
+        <a href="#">Today</a>
+        <a href="#">Upcoming</a>
+      </div>
+      <div class="section">
+        <div class="projects-container">
+          <div id="projects-accordion">Projects</div>
+          <div id="projects"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="date">Today</div>
+      <button id="add-task-btn"><i class="fa fa-plus"></i></button>
+
+      <form action="" id="task-form" style="display: none;">
+        <input type="text" name="task" id="task" placeholder="Task name">
+        <input type="text" name="description" id="description" placeholder="Description">
+        <div class="button-container">
+          
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer></footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

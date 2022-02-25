@@ -1,0 +1,72 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.content {
+  display: flex;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+}
+
+.sidebar .section {
+  display: flex;
+  flex-direction: column;
+}
+
+#projects-accordion {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  text-align: left;
+}
+
+#projects-accordion:before {
+  content: '\f105';
+  font-family: 'fontawesome';
+  float: left;
+}
+
+#projects-accordion.is-open:before {
+  content: '\f107';
+}
+
+.project {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.2s ease-in-out;
+}
+
+#add-task-btn {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+#add-task-btn:after {
+  margin-left: 1em;
+  content: 'Add task';
+}
+
+#task-form {
+  display: flex;
+  flex-direction: column;
+  border: solid 1px grey;
+  border-radius: 5px;
+}
+
+#task-form input {
+  outline: none;
+  border: none;
+  margin: 0.5em;
+}
