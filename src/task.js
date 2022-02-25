@@ -2,8 +2,10 @@ const Task = (name, description, dueDate, project, priority) => {
   let _isCompleted = false;
 
   const getName = () => name;
+  const getProject = () => project;
   return {
-    getName
+    getName,
+    getProject
   };
 }
 

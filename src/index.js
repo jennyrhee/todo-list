@@ -25,7 +25,19 @@ import {Task, Project} from './task.js';
     const div = doc.createElement('div');
     div.classList.add(className);
     div.textContent = obj.getName();
+    if (className === 'project') {
+      if (doc.getElementById('projects-accordion').classList.contains('is-open')) {
+        div.style.maxHeight = div.scrollHeight + 'px';
+      }
+    }
     return div
+  }
+  const _addToDropdown = (project) => {
+    const dropdown = doc.getElementById('project-list');
+    const choice = doc.createElement('option');
+    choice.value = project.getName();
+    choice.textContent = project.getName();
+    dropdown.appendChild(choice);
   }
   const _cancelForm = (id, form) => {
     _toggleForm(id);
@@ -40,11 +52,9 @@ import {Task, Project} from './task.js';
       e.preventDefault();
 
       const newProject = _createProject(form);
-      const projectDiv = _createDiv(newProject, 'project')
-      doc.getElementById('projects').appendChild(projectDiv);
-      if (doc.getElementById('projects-accordion').classList.contains('is-open')) {
-        projectDiv.style.maxHeight = projectDiv.scrollHeight + 'px';
-      }
+      _addToDropdown(newProject);
+      doc.getElementById('projects').appendChild(_createDiv(newProject, 'project'));
+      
       form.reset();
     });
 
@@ -55,7 +65,9 @@ import {Task, Project} from './task.js';
   const _createTask = (form) => {
     const newTask = Task(
       form.elements['task'].value,
-      form.elements['description'].value
+      form.elements['description'].value,
+      null,
+      form.elements['project-list'].value
     );
     _projects[0].addTask(newTask);
 
@@ -80,6 +92,7 @@ import {Task, Project} from './task.js';
   }
   const _initTaskForm = () => {
     doc.getElementById('add-task-btn').onclick = _toggleForm.bind(this, 'task-form');
+    _projects.forEach(project => _addToDropdown(project));
 
     const form = doc.getElementById('task-form');
     form.addEventListener('submit', (e) => {
