@@ -61,8 +61,6 @@ a {
 #task-form {
   display: none;
   flex-direction: column;
-  border: solid 1px grey;
-  border-radius: 5px;
 }
 
 #task-form.show {
@@ -73,4 +71,16 @@ a {
   outline: none;
   border: none;
   margin: 0.5em;
+}
+
+.form-content {
+  display: flex;;
+  flex-direction: column;
+  border: solid 1px grey;
+  border-radius: 5px;
+}
+
+.task-container {
+  display: flex;
+  flex-direction: column;
 }
