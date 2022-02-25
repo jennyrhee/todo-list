@@ -4,8 +4,11 @@ import {Task, Project} from './task.js';
 ((doc) => {
   let _projects = [Project('My Tasks')];
 
-  const _showForm = () => {
-    doc.getElementById('task-form').style.display = 'flex';
+  const _toggleForm = () => {
+    doc.getElementById('task-form').classList.toggle('show');
+  }
+  const _initForm = () => {
+    doc.getElementById('add-task-btn').onclick = _toggleForm;
   }
   const _addProjects = (projects) => {
     _projects.forEach((project) => {
@@ -29,8 +32,8 @@ import {Task, Project} from './task.js';
   }
 
   (() => {
+    _initForm();
     _initAccordion();
-    doc.getElementById('add-task-btn').onclick = _showForm;
   })();
 
   return {

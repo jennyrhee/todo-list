@@ -59,10 +59,14 @@ a {
 }
 
 #task-form {
-  display: flex;
+  display: none;
   flex-direction: column;
   border: solid 1px grey;
   border-radius: 5px;
+}
+
+#task-form.show {
+  display: flex;
 }
 
 #task-form input {
