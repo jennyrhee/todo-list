@@ -2,10 +2,16 @@ const Task = (name, description, dueDate, project, priority) => {
   let _isCompleted = false;
 
   const getName = () => name;
+  const getDescription = () => description;
+  const getDueDate = () => dueDate;
   const getProject = () => project;
+  const getPriority = () => priority;
   return {
     getName,
-    getProject
+    getDescription,
+    getDueDate,
+    getProject,
+    getPriority
   };
 }
 

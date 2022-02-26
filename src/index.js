@@ -66,8 +66,9 @@ import {Task, Project} from './task.js';
     const newTask = Task(
       form.elements['task'].value,
       form.elements['description'].value,
-      null,
-      form.elements['project-list'].value
+      form.elements['due-date'].value,
+      form.elements['project-list'].value,
+      form.elements['priority'].value
     );
     _projects[0].addTask(newTask);
 
