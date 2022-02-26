@@ -5,6 +5,9 @@ import {Task, Project} from './task.js';
   const _projects = [Project('My Tasks')];
 
   const _toggleForm = (formId) => {
+    if (formId === 'task-form') {
+      doc.getElementById('add-task-btn').style.display = 'none';
+    }
     doc.getElementById(formId).classList.toggle('show');
   }
   const _disableBtnWhenEmpty = (id, btn) => {
@@ -42,6 +45,9 @@ import {Task, Project} from './task.js';
   const _cancelForm = (id, form) => {
     _toggleForm(id);
     form.reset();
+    if (id === 'task-form') {
+      doc.getElementById('add-task-btn').style.display = 'block';
+    }
   }
   const _initProjectForm = () => {
     doc.getElementById('add-project-btn').onclick = _toggleForm.bind(this, 'project-form');
