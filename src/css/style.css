@@ -1,13 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #f8edeb;
 }
 
 a {
@@ -23,13 +27,21 @@ a {
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 15%;
-  padding: 1em;
+  width: 305px;
+  padding: 35px;
+  font-size: 0.9rem;
+  background-color: #f9dcc4;
+}
+
+.sidebar a {
+  margin-left: 20px;
+  margin-bottom: 0.5em;
 }
 
 .sidebar .section {
   display: flex;
   flex-direction: column;
+  margin-bottom: 1.5em;
 }
 
 .projects-container .wrapper {
@@ -39,15 +51,19 @@ a {
 
 #projects-accordion {
   border: none;
-  background-color: white;
   cursor: pointer;
   text-align: left;
+  display: flex;
+  align-items: center;
+  padding: 0.1em;
 }
 
 #projects-accordion:before {
   content: '\f105';
   font-family: 'fontawesome';
   float: left;
+  height: 18px;
+  width: 18px;
 }
 
 #projects-accordion.is-open:before {
@@ -55,6 +71,8 @@ a {
 }
 
 .project {
+  margin-left: 20px;
+  margin-top: 0.5em;
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.2s ease-in-out;
@@ -72,8 +90,21 @@ a {
 #add-project-btn,
 #add-task-btn {
   border: none;
-  background-color: white;
+  background-color: inherit;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+#add-project-btn {
+  color: #f9dcc4;
+}
+
+#add-project-btn:hover {
+  color: black;
+}
+
+#add-task-btn:hover {
+  color: #ffb5a7;
 }
 
 #add-task-btn:after {
@@ -104,11 +135,20 @@ a {
   border-radius: 5px;
 }
 
+.main {
+  padding: 35px;
+}
+
 .task-container {
   display: flex;
   flex-direction: column;
 }
 
 footer {
-  align-self: center;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  text-align: center;
+  font-size: 0.8rem;
+  text-transform: uppercase;
 }
