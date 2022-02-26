@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
 
 * {
   margin: 0;
@@ -56,6 +56,7 @@ a {
   display: flex;
   align-items: center;
   padding: 0.1em;
+  font-weight: bold;
 }
 
 #projects-accordion:before {
@@ -87,11 +88,14 @@ a {
   transform: translate(-50%, -50%);
 }
 
+button {
+  background-color: inherit;
+  cursor: pointer;
+}
+
 #add-project-btn,
 #add-task-btn {
   border: none;
-  background-color: inherit;
-  cursor: pointer;
   transition: 0.2s;
 }
 
@@ -126,6 +130,12 @@ a {
   outline: none;
   border: none;
   margin: 0.5em;
+  background-color: inherit;
+}
+
+select {
+  background-color: inherit;
+  border-radius: 5px;
 }
 
 .form-content {
@@ -133,6 +143,21 @@ a {
   flex-direction: column;
   border: solid 1px grey;
   border-radius: 5px;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+#submit-task-btn,
+#cancel-task-btn {
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  border: solid 1px;
+}
+
+#submit-task-btn {
+  background-color: #fec89a;
 }
 
 .main {
