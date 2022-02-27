@@ -25,15 +25,16 @@ import {Task, Project} from './task.js';
     return newProject;
   }
   const _createDiv = (obj, className) => {
-    const div = doc.createElement('div');
-    div.classList.add(className);
-    div.textContent = obj.getName();
+    const ele = doc.createElement('div');
+    ele.classList.add(className);
+    ele.textContent = obj.getName();
     if (className === 'project') {
       if (doc.getElementById('projects-accordion').classList.contains('is-open')) {
-        div.style.maxHeight = div.scrollHeight + 'px';
+        ele.style.maxHeight = '21px';
       }
+      ele.addEventListener('click', _loadProjectTasks)
     }
-    return div
+    return ele
   }
   const _addToDropdown = (project) => {
     const dropdown = doc.getElementById('project-list');
@@ -76,7 +77,10 @@ import {Task, Project} from './task.js';
       form.elements['project-list'].value,
       form.elements['priority'].value
     );
-    _projects[0].addTask(newTask);
+    const project = _projects.find(obj => 
+      obj.getName() === form.elements['project-list'].value
+    );
+    project.addTask(newTask);
 
     return newTask;
   }
@@ -132,6 +136,15 @@ import {Task, Project} from './task.js';
         else project.style.maxHeight = project.scrollHeight + 'px';
       })
     }
+  }
+  const _loadProjectTasks = (e) => {
+    const projectName = e.target.textContent;
+    const project = _projects.find(obj => obj.getName() === projectName);
+
+    doc.querySelector('.title').textContent = projectName;
+    const container = doc.querySelector('.task-container');
+    container.textContent = '';
+    project.getTasks().forEach(task => _addTask(task, container));
   }
 
   (() => {

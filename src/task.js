@@ -6,6 +6,7 @@ const Task = (name, description, dueDate, project, priority) => {
   const getDueDate = () => dueDate;
   const getProject = () => project;
   const getPriority = () => priority;
+
   return {
     getName,
     getDescription,
@@ -16,16 +17,18 @@ const Task = (name, description, dueDate, project, priority) => {
 }
 
 const Project = (name) => {
-  let _tasks = [];
+  const _tasks = [];
 
   const getName = () => name;
   const addTask = (task) => {
     _tasks.push(task);
   }
+  const getTasks = () => _tasks;
 
   return {
     getName,
-    addTask
+    addTask,
+    getTasks
   };
 }
 
