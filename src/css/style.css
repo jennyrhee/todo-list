@@ -27,9 +27,17 @@ header {
 }
 
 .menu-btn {
+  padding: 0.1em 0.3em;
+  border-radius: 5px;
   position: fixed;
-  left: 1.8em;
+  left: 1.4em;
+  top: 1.1em;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.menu-btn:hover {
+  background-color: #fcd5ce;
 }
 
 .menu-btn div {
@@ -43,6 +51,7 @@ header {
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   letter-spacing: 2px;
+  font-size: 1.5rem;
 }
 
 .content {
