@@ -151,6 +151,10 @@ import {Task, Project} from './task.js';
     _initProjectForm();
     _initTaskForm();
     _initAccordion();
+
+    doc.querySelector('.menu-btn').onclick = () => {
+      doc.getElementById('sidebar').classList.toggle('hidden');
+    }
   })();
 
   return {

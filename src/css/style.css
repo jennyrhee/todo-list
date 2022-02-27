@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@400;500&display=swap');
 
 * {
   margin: 0;
@@ -19,26 +19,59 @@ a {
   color: inherit;
 }
 
+header {
+  background-color: #ffb5a7;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.menu-btn {
+  position: fixed;
+  left: 1.8em;
+  cursor: pointer;
+}
+
+.menu-btn div {
+  width: 18px;
+  height: 2px;
+  margin: 4px 0;
+  background-color: black;
+}
+
+.logo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
 .content {
   display: flex;
   flex: 1;
 }
 
-.sidebar {
+#sidebar {
   display: flex;
   flex-direction: column;
-  width: 305px;
+  width: 290px;
   padding: 35px;
   font-size: 0.9rem;
   background-color: #f9dcc4;
+  transition: width 0.1s, padding 0.1s;
+  overflow: hidden;
 }
 
-.sidebar a {
+#sidebar.hidden {
+  width: 0;
+  padding: 0;
+}
+
+#sidebar a {
   margin-left: 20px;
   margin-bottom: 0.5em;
 }
 
-.sidebar .section {
+#sidebar .section {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.5em;
