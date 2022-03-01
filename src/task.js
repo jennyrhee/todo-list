@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const Task = (name, description, dueDate, project, priority) => {
   let _isCompleted = false;
 
@@ -12,9 +13,9 @@ const Task = (name, description, dueDate, project, priority) => {
     getDescription,
     getDueDate,
     getProject,
-    getPriority
+    getPriority,
   };
-}
+};
 
 const Project = (name) => {
   const _tasks = [];
@@ -22,14 +23,14 @@ const Project = (name) => {
   const getName = () => name;
   const addTask = (task) => {
     _tasks.push(task);
-  }
+  };
   const getTasks = () => _tasks;
 
   return {
     getName,
     addTask,
-    getTasks
+    getTasks,
   };
-}
+};
 
-export {Task, Project};
+export { Task, Project };
