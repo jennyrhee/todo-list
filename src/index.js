@@ -57,7 +57,9 @@ import { Task, Project } from './task';
     ele.classList.add(className);
     ele.textContent = obj.getName();
     if (className === 'project') {
-      if (doc.getElementById('projects-accordion').classList.contains('is-open')) {
+      if (
+        doc.getElementById('projects-accordion').classList.contains('is-open')
+      ) {
         ele.style.maxHeight = '21px';
       }
       ele.addEventListener('click', _loadProjectTasks);
@@ -79,7 +81,10 @@ import { Task, Project } from './task';
     }
   };
   const _initProjectForm = () => {
-    doc.getElementById('add-project-btn').onclick = _toggleForm.bind(this, 'project-form');
+    doc.getElementById('add-project-btn').onclick = _toggleForm.bind(
+      this,
+      'project-form',
+    );
     _disableBtnWhenEmpty('project', 'submit-project-btn');
 
     const form = doc.getElementById('project-form');
@@ -88,12 +93,18 @@ import { Task, Project } from './task';
 
       const newProject = _createProject(form);
       _addToDropdown(newProject);
-      doc.getElementById('projects').appendChild(_createDiv(newProject, 'project'));
+      doc
+        .getElementById('projects')
+        .appendChild(_createDiv(newProject, 'project'));
 
       form.reset();
     });
 
-    doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(this, 'project-form', form);
+    doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(
+      this,
+      'project-form',
+      form,
+    );
   };
   const _createTask = (form) => {
     const newTask = Task(
@@ -103,13 +114,18 @@ import { Task, Project } from './task';
       form.elements['project-list'].value,
       form.elements.priority.value,
     );
-    const project = _projects.find((obj) => obj.getName() === form.elements['project-list'].value);
+    const project = _projects.find(
+      (obj) => obj.getName() === form.elements['project-list'].value,
+    );
     project.addTask(newTask);
 
     return newTask;
   };
   const _initTaskForm = () => {
-    doc.getElementById('add-task-btn').onclick = _toggleForm.bind(this, 'task-form');
+    doc.getElementById('add-task-btn').onclick = _toggleForm.bind(
+      this,
+      'task-form',
+    );
     _projects.forEach((project) => _addToDropdown(project));
 
     const form = doc.getElementById('task-form');
@@ -122,7 +138,11 @@ import { Task, Project } from './task';
     });
 
     _disableBtnWhenEmpty('task', 'submit-task-btn');
-    doc.getElementById('cancel-task-btn').onclick = _cancelForm.bind(this, 'task-form', form);
+    doc.getElementById('cancel-task-btn').onclick = _cancelForm.bind(
+      this,
+      'task-form',
+      form,
+    );
   };
   const _addProjects = (projects) => {
     _projects.forEach((project) => {
