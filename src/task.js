@@ -9,6 +9,11 @@ const Task = (name, description, dueDate, project, priority) => {
   const getDueDate = () => dueDate;
   const getProject = () => project;
   const getPriority = () => priority;
+  const getCompleted = () => _isCompleted;
+  const getDetails = () => [name, description, project, priority, dueDate];
+  const completeTask = () => {
+    _isCompleted = true;
+  };
 
   return {
     getTaskId,
@@ -17,6 +22,9 @@ const Task = (name, description, dueDate, project, priority) => {
     getDueDate,
     getProject,
     getPriority,
+    getCompleted,
+    getDetails,
+    completeTask,
   };
 };
 

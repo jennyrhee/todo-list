@@ -227,7 +227,13 @@ select {
 }
 
 .main {
-  padding: 35px;
+  padding: 4.5vh 10vw;
+  width: 100%;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
 .task-container {
@@ -235,10 +241,26 @@ select {
   flex-direction: column;
 }
 
-.task-container .container {
+.task-wrapper {
   display: flex;
   align-items: center;
   margin: 0.7em 0;
+}
+
+.details-container {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 0.5em;
+  font-size: 0.8rem;
+  margin: 0 1.5em 1em 1.5em;
+  overflow: hidden;
+}
+
+.details-container.hidden {
+  max-height: 0;
+  padding: 0;
+  border: none;
+  margin: 0;
 }
 
 input[type=checkbox]:checked + label {
@@ -248,6 +270,12 @@ input[type=checkbox]:checked + label {
 .task {
   font-size: 0.8rem;
   padding-left: 0.5em;
+  cursor: pointer;
+}
+
+hr.divider {
+  border-top: 1px solid #fcd5ce;
+  opacity: 0.8;
 }
 
 footer {

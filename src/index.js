@@ -32,22 +32,57 @@ import { Task, Project } from './task';
     _projects.push(newProject);
     return newProject;
   };
-  const _addTask = (task, taskContainer) => {
-    const container = doc.createElement('div');
-    container.classList.add('container');
+  const _createTaskDetails = (task) => {
+    const detailsContainer = doc.createElement('div');
+    detailsContainer.classList.add('details-container');
+
+    task.getDetails().forEach((detail) => {
+      const div = doc.createElement('div');
+      div.textContent = detail;
+      detailsContainer.append(div);
+    });
+    // const colOne = doc.createElement('div');
+    // const colTwo = doc.createElement('div');
+    detailsContainer.classList.add('hidden');
+    detailsContainer.setAttribute('task-id', task.getTaskId());
+
+    return detailsContainer;
+  };
+  const _createTaskWrapper = (task) => {
+    const taskWrapper = doc.createElement('div');
+    taskWrapper.classList.add('task-wrapper');
 
     const check = doc.createElement('input');
     check.type = 'checkbox';
-    check.id = task.getName();
+    check.id = task.getTaskId();
 
     const label = doc.createElement('label');
-    label.htmlFor = task.getName();
+    label.setAttribute('project', task.getProject());
+    label.setAttribute('task-id', task.getTaskId());
     label.classList.add('task');
     label.textContent = task.getName();
+    label.onclick = () => {
+      doc
+        .querySelector(`.details-container[task-id=${task.getTaskId()}]`)
+        .classList.toggle('hidden');
+    };
 
-    container.appendChild(check);
-    container.appendChild(label);
+    taskWrapper.appendChild(check);
+    taskWrapper.appendChild(label);
+
+    return taskWrapper;
+  };
+  const _addTaskDivs = (task, taskContainer) => {
+    const container = doc.createElement('div');
+    container.classList.add('container');
+
+    container.appendChild(_createTaskWrapper(task));
+    container.appendChild(_createTaskDetails(task));
     taskContainer.appendChild(container);
+
+    const divider = doc.createElement('hr');
+    divider.classList.add('divider');
+    taskContainer.appendChild(divider);
   };
   const _loadProjectTasks = (e) => {
     const projectName = e.target.textContent;
@@ -56,7 +91,7 @@ import { Task, Project } from './task';
     doc.querySelector('.title').textContent = projectName;
     const container = doc.querySelector('.task-container');
     container.textContent = '';
-    project.getTasks().forEach((task) => _addTask(task, container));
+    project.getTasks().forEach((task) => _addTaskDivs(task, container));
   };
   const _createDiv = (obj, className) => {
     const ele = doc.createElement('div');
@@ -140,7 +175,7 @@ import { Task, Project } from './task';
       e.preventDefault();
 
       const newTask = _createTask(form);
-      _addTask(newTask, doc.querySelector('.task-container'));
+      _addTaskDivs(newTask, doc.querySelector('.task-container'));
       form.reset();
     });
 
