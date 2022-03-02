@@ -10,7 +10,13 @@ const Task = (name, description, dueDate, project, priority) => {
   const getProject = () => project;
   const getPriority = () => priority;
   const getCompleted = () => _isCompleted;
-  const getDetails = () => [name, description, project, priority, dueDate];
+  const getDetails = () => ({
+    name,
+    description,
+    project,
+    priority,
+    due: dueDate,
+  });
   const completeTask = () => {
     _isCompleted = true;
   };

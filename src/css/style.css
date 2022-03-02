@@ -248,6 +248,8 @@ select {
 }
 
 .details-container {
+  display: flex;
+  gap: 40%;
   border: 1px solid grey;
   border-radius: 5px;
   padding: 0.5em;

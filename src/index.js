@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
+import { titleCase } from 'title-case';
 import './css/style.css';
 import { Task, Project } from './task';
 
@@ -36,13 +37,17 @@ import { Task, Project } from './task';
     const detailsContainer = doc.createElement('div');
     detailsContainer.classList.add('details-container');
 
-    task.getDetails().forEach((detail) => {
+    const colOne = doc.createElement('div');
+    const colTwo = doc.createElement('div');
+    Object.entries(task.getDetails()).forEach((entry, i) => {
+      const [key, detail] = entry;
       const div = doc.createElement('div');
-      div.textContent = detail;
-      detailsContainer.append(div);
+      div.textContent = `${titleCase(key)}: ${detail}`;
+      if (i < 2) colOne.appendChild(div);
+      else colTwo.appendChild(div);
     });
-    // const colOne = doc.createElement('div');
-    // const colTwo = doc.createElement('div');
+    detailsContainer.appendChild(colOne);
+    detailsContainer.appendChild(colTwo);
     detailsContainer.classList.add('hidden');
     detailsContainer.setAttribute('task-id', task.getTaskId());
 
