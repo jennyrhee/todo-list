@@ -129,6 +129,21 @@ header {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  background-color: #f8edeb;
+  padding: 1em;
+  width: max(250px, 25vw);
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgb(66, 66, 66);
+}
+
+#project-form .button-container {
+  margin-top: 0.8em;
+}
+
+#project-form input {
+  border-radius: 5px;
+  border: solid 1px;
+  padding: 3px;
 }
 
 button {
@@ -170,10 +185,14 @@ button {
   display: flex;
 }
 
+#project-form input,
 #task-form input {
   outline: none;
+}
+
+#task-form input {
   border: none;
-  margin: 0.5em;
+  margin: 0.5em 0.2em;
   background-color: inherit;
 }
 
@@ -191,6 +210,8 @@ select {
   margin-bottom: 0.5em;
 }
 
+#submit-project-btn,
+#cancel-project-btn,
 #submit-task-btn,
 #cancel-task-btn {
   font-size: 0.8rem;
@@ -200,6 +221,7 @@ select {
   border: solid 1px;
 }
 
+#submit-project-btn,
 #submit-task-btn {
   background-color: #fec89a;
 }
