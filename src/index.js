@@ -6,9 +6,15 @@ import { Task, Project } from './task';
 ((doc) => {
   const _projects = [Project('My Tasks')];
 
+  const _toggleMask = () => {
+    const mask = doc.getElementById('mask');
+    mask.classList.toggle('show');
+  };
   const _toggleForm = (formId) => {
     if (formId === 'task-form') {
       doc.getElementById('add-task-btn').style.display = 'none';
+    } else if (formId === 'project-form') {
+      _toggleMask();
     }
     doc.getElementById(formId).classList.toggle('show');
   };
@@ -98,6 +104,7 @@ import { Task, Project } from './task';
         .appendChild(_createDiv(newProject, 'project'));
 
       form.reset();
+      _toggleForm('project-form');
     });
 
     doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(
