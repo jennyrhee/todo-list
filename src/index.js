@@ -3,10 +3,13 @@
 import { titleCase } from 'title-case';
 import './css/style.css';
 import { Task, Project } from './task';
+import parseJSON from './storage';
 import createCustomElement from './helper';
 
 ((doc) => {
-  const _projects = [Project('My Tasks')];
+  const _projects = localStorage.getItem('projects')
+    ? parseJSON()
+    : [Project('My Tasks')];
 
   const _toggleMask = () => {
     doc.getElementById('mask').classList.toggle('show');
@@ -31,6 +34,7 @@ import createCustomElement from './helper';
   const _createProject = (form) => {
     const newProject = Project(form.elements.project.value);
     _projects.push(newProject);
+    localStorage.setItem('projects', JSON.stringify(_projects));
     return newProject;
   };
   const _createTaskDetails = (task) => {
@@ -40,14 +44,18 @@ import createCustomElement from './helper';
     const colTwo = doc.createElement('div');
     Object.entries(task.getDetails()).forEach((entry, i) => {
       const [key, detail] = entry;
-      const div = createCustomElement('div', null, `${titleCase(key)}: ${detail}`);
+      const div = createCustomElement(
+        'div',
+        null,
+        `${titleCase(key)}: ${detail}`,
+      );
       if (i < 2) colOne.appendChild(div);
       else colTwo.appendChild(div);
     });
     detailsContainer.appendChild(colOne);
     detailsContainer.appendChild(colTwo);
     detailsContainer.classList.add('hidden');
-    detailsContainer.setAttribute('task-id', task.getTaskId());
+    detailsContainer.setAttribute('task-id', task.taskId);
 
     return detailsContainer;
   };
@@ -56,15 +64,15 @@ import createCustomElement from './helper';
 
     const check = doc.createElement('input');
     check.type = 'checkbox';
-    check.id = task.getTaskId();
+    check.id = task.taskId;
     check.onclick = () => task.toggleComplete();
 
-    const label = createCustomElement('label', 'task', task.getName());
-    label.setAttribute('project', task.getProject());
-    label.setAttribute('task-id', task.getTaskId());
+    const label = createCustomElement('label', 'task', task.name);
+    label.setAttribute('project', task.project);
+    label.setAttribute('task-id', task.taskId);
     label.onclick = () => {
       doc
-        .querySelector(`.details-container[task-id=${task.getTaskId()}]`)
+        .querySelector(`.details-container[task-id=${task.taskId}]`)
         .classList.toggle('hidden');
     };
 
@@ -83,17 +91,17 @@ import createCustomElement from './helper';
   };
   const _loadProjectTasks = (e) => {
     const projectName = e.target.textContent;
-    const project = _projects.find((obj) => obj.getName() === projectName);
+    const project = _projects.find((obj) => obj.name === projectName);
 
     doc.querySelector('.title').textContent = projectName;
     const container = doc.querySelector('.task-container');
     container.textContent = '';
-    project.getTasks().forEach((task) => _addTaskDivs(task, container));
+    project.tasks.forEach((task) => _addTaskDivs(task, container));
   };
   const _addToDropdown = (project) => {
     const dropdown = doc.getElementById('project-list');
-    const choice = createCustomElement('option', null, project.getName());
-    choice.value = project.getName();
+    const choice = createCustomElement('option', null, project.name);
+    choice.value = project.name;
     dropdown.appendChild(choice);
   };
   const _cancelForm = (id, form) => {
@@ -117,11 +125,9 @@ import createCustomElement from './helper';
       const newProject = _createProject(form);
       _addToDropdown(newProject);
 
-      const div = createCustomElement('div', 'project', newProject.getName());
+      const div = createCustomElement('div', 'project', newProject.name);
       div.addEventListener('click', _loadProjectTasks);
-      doc
-        .getElementById('projects')
-        .appendChild(div);
+      doc.getElementById('projects').appendChild(div);
 
       form.reset();
       _toggleForm('project-form');
@@ -142,9 +148,10 @@ import createCustomElement from './helper';
       form.elements.priority.value,
     );
     const project = _projects.find(
-      (obj) => obj.getName() === form.elements['project-list'].value,
+      (obj) => obj.name === form.elements['project-list'].value,
     );
     project.addTask(newTask);
+    localStorage.setItem('projects', JSON.stringify(_projects));
 
     return newTask;
   };
@@ -173,7 +180,7 @@ import createCustomElement from './helper';
   };
   const _addProjects = (projects) => {
     _projects.forEach((project) => {
-      const div = createCustomElement('div', 'project', project.getName());
+      const div = createCustomElement('div', 'project', project.name);
       div.addEventListener('click', _loadProjectTasks);
       projects.appendChild(div);
     });
@@ -192,6 +199,9 @@ import createCustomElement from './helper';
   };
 
   (() => {
+    if (!localStorage.getItem('projects')) {
+      localStorage.setItem('projects', JSON.stringify(_projects));
+    }
     _initProjectForm();
     _initTaskForm();
     _initAccordion();
