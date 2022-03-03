@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const Task = (name, description, dueDate, project, priority) => {
   let _isCompleted = false;
-  const _taskId = Math.random().toString(36).substring(2, 9);
+  const _taskId = `_${Math.random().toString(36).substring(2, 9)}`;
 
   const getTaskId = () => _taskId;
   const getName = () => name;
