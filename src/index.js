@@ -2,15 +2,10 @@
 /* eslint-disable no-underscore-dangle */
 import { titleCase } from 'title-case';
 import './css/style.css';
-import { Task, Project } from './task';
-import parseJSON from './storage';
+import storage from './storage';
 import createCustomElement from './helper';
 
 ((doc) => {
-  const _projects = localStorage.getItem('projects')
-    ? parseJSON()
-    : [Project('My Tasks')];
-
   const _toggleMask = () => {
     doc.getElementById('mask').classList.toggle('show');
   };
@@ -30,12 +25,6 @@ import createCustomElement from './helper';
         doc.getElementById(btn).disabled = false;
       }
     });
-  };
-  const _createProject = (form) => {
-    const newProject = Project(form.elements.project.value);
-    _projects.push(newProject);
-    localStorage.setItem('projects', JSON.stringify(_projects));
-    return newProject;
   };
   const _createTaskDetails = (task) => {
     const detailsContainer = createCustomElement('div', 'details-container');
@@ -91,7 +80,7 @@ import createCustomElement from './helper';
   };
   const _loadProjectTasks = (e) => {
     const projectName = e.target.textContent;
-    const project = _projects.find((obj) => obj.name === projectName);
+    const project = storage.projects.find((obj) => obj.name === projectName);
 
     doc.querySelector('.title').textContent = projectName;
     const container = doc.querySelector('.task-container');
@@ -122,7 +111,7 @@ import createCustomElement from './helper';
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const newProject = _createProject(form);
+      const newProject = storage.createProject(form);
       _addToDropdown(newProject);
 
       const div = createCustomElement('div', 'project', newProject.name);
@@ -139,34 +128,18 @@ import createCustomElement from './helper';
       form,
     );
   };
-  const _createTask = (form) => {
-    const newTask = Task(
-      form.elements.task.value,
-      form.elements.description.value,
-      form.elements['due-date'].value,
-      form.elements['project-list'].value,
-      form.elements.priority.value,
-    );
-    const project = _projects.find(
-      (obj) => obj.name === form.elements['project-list'].value,
-    );
-    project.addTask(newTask);
-    localStorage.setItem('projects', JSON.stringify(_projects));
-
-    return newTask;
-  };
   const _initTaskForm = () => {
     doc.getElementById('add-task-btn').onclick = _toggleForm.bind(
       this,
       'task-form',
     );
-    _projects.forEach((project) => _addToDropdown(project));
+    storage.projects.forEach((project) => _addToDropdown(project));
 
     const form = doc.getElementById('task-form');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const newTask = _createTask(form);
+      const newTask = storage.createTask(form);
       _addTaskDivs(newTask, doc.querySelector('.task-container'));
       form.reset();
     });
@@ -179,7 +152,7 @@ import createCustomElement from './helper';
     );
   };
   const _addProjects = (projects) => {
-    _projects.forEach((project) => {
+    storage.projects.forEach((project) => {
       const div = createCustomElement('div', 'project', project.name);
       div.addEventListener('click', _loadProjectTasks);
       projects.appendChild(div);
@@ -199,9 +172,6 @@ import createCustomElement from './helper';
   };
 
   (() => {
-    if (!localStorage.getItem('projects')) {
-      localStorage.setItem('projects', JSON.stringify(_projects));
-    }
     _initProjectForm();
     _initTaskForm();
     _initAccordion();
