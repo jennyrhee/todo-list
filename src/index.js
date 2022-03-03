@@ -3,13 +3,13 @@
 import { titleCase } from 'title-case';
 import './css/style.css';
 import { Task, Project } from './task';
+import createCustomElement from './helper';
 
 ((doc) => {
   const _projects = [Project('My Tasks')];
 
   const _toggleMask = () => {
-    const mask = doc.getElementById('mask');
-    mask.classList.toggle('show');
+    doc.getElementById('mask').classList.toggle('show');
   };
   const _toggleForm = (formId) => {
     if (formId === 'task-form') {
@@ -34,15 +34,13 @@ import { Task, Project } from './task';
     return newProject;
   };
   const _createTaskDetails = (task) => {
-    const detailsContainer = doc.createElement('div');
-    detailsContainer.classList.add('details-container');
+    const detailsContainer = createCustomElement('div', 'details-container');
 
     const colOne = doc.createElement('div');
     const colTwo = doc.createElement('div');
     Object.entries(task.getDetails()).forEach((entry, i) => {
       const [key, detail] = entry;
-      const div = doc.createElement('div');
-      div.textContent = `${titleCase(key)}: ${detail}`;
+      const div = createCustomElement('div', null, `${titleCase(key)}: ${detail}`);
       if (i < 2) colOne.appendChild(div);
       else colTwo.appendChild(div);
     });
@@ -54,18 +52,15 @@ import { Task, Project } from './task';
     return detailsContainer;
   };
   const _createTaskWrapper = (task) => {
-    const taskWrapper = doc.createElement('div');
-    taskWrapper.classList.add('task-wrapper');
+    const taskWrapper = createCustomElement('div', 'task-wrapper');
 
     const check = doc.createElement('input');
     check.type = 'checkbox';
     check.id = task.getTaskId();
 
-    const label = doc.createElement('label');
+    const label = createCustomElement('label', 'task', task.getName());
     label.setAttribute('project', task.getProject());
     label.setAttribute('task-id', task.getTaskId());
-    label.classList.add('task');
-    label.textContent = task.getName();
     label.onclick = () => {
       doc
         .querySelector(`.details-container[task-id=${task.getTaskId()}]`)
@@ -78,16 +73,12 @@ import { Task, Project } from './task';
     return taskWrapper;
   };
   const _addTaskDivs = (task, taskContainer) => {
-    const container = doc.createElement('div');
-    container.classList.add('container');
-
+    const container = createCustomElement('div', 'container');
     container.appendChild(_createTaskWrapper(task));
     container.appendChild(_createTaskDetails(task));
     taskContainer.appendChild(container);
 
-    const divider = doc.createElement('hr');
-    divider.classList.add('divider');
-    taskContainer.appendChild(divider);
+    taskContainer.appendChild(createCustomElement('hr', 'divider'));
   };
   const _loadProjectTasks = (e) => {
     const projectName = e.target.textContent;
@@ -98,25 +89,10 @@ import { Task, Project } from './task';
     container.textContent = '';
     project.getTasks().forEach((task) => _addTaskDivs(task, container));
   };
-  const _createDiv = (obj, className) => {
-    const ele = doc.createElement('div');
-    ele.classList.add(className);
-    ele.textContent = obj.getName();
-    if (className === 'project') {
-      if (
-        doc.getElementById('projects-accordion').classList.contains('is-open')
-      ) {
-        ele.style.maxHeight = '21px';
-      }
-      ele.addEventListener('click', _loadProjectTasks);
-    }
-    return ele;
-  };
   const _addToDropdown = (project) => {
     const dropdown = doc.getElementById('project-list');
-    const choice = doc.createElement('option');
+    const choice = createCustomElement('option', null, project.getName());
     choice.value = project.getName();
-    choice.textContent = project.getName();
     dropdown.appendChild(choice);
   };
   const _cancelForm = (id, form) => {
@@ -139,9 +115,12 @@ import { Task, Project } from './task';
 
       const newProject = _createProject(form);
       _addToDropdown(newProject);
+
+      const div = createCustomElement('div', 'project', newProject.getName());
+      div.addEventListener('click', _loadProjectTasks);
       doc
         .getElementById('projects')
-        .appendChild(_createDiv(newProject, 'project'));
+        .appendChild(div);
 
       form.reset();
       _toggleForm('project-form');
@@ -193,7 +172,8 @@ import { Task, Project } from './task';
   };
   const _addProjects = (projects) => {
     _projects.forEach((project) => {
-      const div = _createDiv(project, 'project');
+      const div = createCustomElement('div', 'project', project.getName());
+      div.addEventListener('click', _loadProjectTasks);
       projects.appendChild(div);
     });
   };
