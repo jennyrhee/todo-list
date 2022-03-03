@@ -57,6 +57,7 @@ import createCustomElement from './helper';
     const check = doc.createElement('input');
     check.type = 'checkbox';
     check.id = task.getTaskId();
+    check.onclick = () => task.toggleComplete();
 
     const label = createCustomElement('label', 'task', task.getName());
     label.setAttribute('project', task.getProject());

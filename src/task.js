@@ -17,8 +17,8 @@ const Task = (name, description, dueDate, project, priority) => {
     priority,
     due: dueDate,
   });
-  const completeTask = () => {
-    _isCompleted = true;
+  const toggleComplete = () => {
+    _isCompleted = !_isCompleted;
   };
 
   return {
@@ -30,7 +30,7 @@ const Task = (name, description, dueDate, project, priority) => {
     getPriority,
     getCompleted,
     getDetails,
-    completeTask,
+    toggleComplete,
   };
 };
 
