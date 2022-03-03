@@ -25,6 +25,11 @@ import createCustomElement from './helper';
         doc.getElementById(btn).disabled = false;
       }
     });
+    doc.getElementById(id).addEventListener('enter', (e) => {
+      if (e.target.value === '') {
+        doc.getElementById(btn).disabled = true;
+      }
+    });
   };
   const _createTaskDetails = (task) => {
     const detailsContainer = createCustomElement('div', 'details-container');
@@ -70,7 +75,7 @@ import createCustomElement from './helper';
 
     return taskWrapper;
   };
-  const _addTaskDivs = (task, taskContainer) => {
+  const _createTaskDivs = (task, taskContainer) => {
     const container = createCustomElement('div', 'container');
     container.appendChild(_createTaskWrapper(task));
     container.appendChild(_createTaskDetails(task));
@@ -85,7 +90,7 @@ import createCustomElement from './helper';
     doc.querySelector('.title').textContent = projectName;
     const container = doc.querySelector('.task-container');
     container.textContent = '';
-    project.tasks.forEach((task) => _addTaskDivs(task, container));
+    project.tasks.forEach((task) => _createTaskDivs(task, container));
   };
   const _addToDropdown = (project) => {
     const dropdown = doc.getElementById('project-list');
@@ -140,7 +145,7 @@ import createCustomElement from './helper';
       e.preventDefault();
 
       const newTask = storage.createTask(form);
-      _addTaskDivs(newTask, doc.querySelector('.task-container'));
+      _createTaskDivs(newTask, doc.querySelector('.task-container'));
       form.reset();
     });
 
