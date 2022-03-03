@@ -62,7 +62,7 @@ header {
 #sidebar {
   display: flex;
   flex-direction: column;
-  width: 290px;
+  width: 380px;
   padding: 35px;
   font-size: 0.9rem;
   background-color: #f9dcc4;
@@ -242,6 +242,31 @@ select {
 }
 
 .task-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon-container {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-container .fa {
+  cursor: pointer;
+  color: rgb(180, 180, 180);
+  opacity: 0.7;
+  transition: 0.2s ease-in-out;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.icon-container .fa:hover {
+  background-color: #f9dcc4;
+}
+
+
+.task-item {
   display: flex;
   align-items: center;
   margin: 0.7em 0;

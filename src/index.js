@@ -53,8 +53,8 @@ import createCustomElement from './helper';
 
     return detailsContainer;
   };
-  const _createTaskWrapper = (task) => {
-    const taskWrapper = createCustomElement('div', 'task-wrapper');
+  const _createTaskItem = (task) => {
+    const taskItem = createCustomElement('div', 'task-item');
 
     const check = doc.createElement('input');
     check.type = 'checkbox';
@@ -70,14 +70,38 @@ import createCustomElement from './helper';
         .classList.toggle('hidden');
     };
 
-    taskWrapper.appendChild(check);
-    taskWrapper.appendChild(label);
+    taskItem.appendChild(check);
+    taskItem.appendChild(label);
 
-    return taskWrapper;
+    return taskItem;
+  };
+  const _createTaskIcon = (className, fontAwesomeClass = null) => {
+    const icon = createCustomElement('i', className);
+    if (fontAwesomeClass) {
+      icon.classList.add('fa');
+      icon.classList.add(fontAwesomeClass);
+    }
+    return icon;
   };
   const _createTaskDivs = (task, taskContainer) => {
     const container = createCustomElement('div', 'container');
-    container.appendChild(_createTaskWrapper(task));
+
+    const taskWrapper = createCustomElement('div', 'task-wrapper');
+    taskWrapper.appendChild(_createTaskItem(task));
+
+    const iconContainer = createCustomElement('div', 'icon-container');
+    const iconObj = {
+      'edit-task-btn': 'fa-pen-to-square',
+      'move-project-btn': 'fa-arrow-right-from-bracket',
+      'trash-btn': 'fa-trash',
+    };
+    Object.entries(iconObj).forEach((entry) => {
+      const [btnClass, fontAwesomeClass] = entry;
+      iconContainer.appendChild(_createTaskIcon(btnClass, fontAwesomeClass));
+    });
+    taskWrapper.appendChild(iconContainer);
+
+    container.appendChild(taskWrapper);
     container.appendChild(_createTaskDetails(task));
     taskContainer.appendChild(container);
 
