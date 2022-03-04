@@ -83,23 +83,37 @@ import createCustomElement from './helper';
     }
     return icon;
   };
-  const _createTaskDivs = (task, taskContainer) => {
-    const container = createCustomElement('div', 'container');
-
-    const taskWrapper = createCustomElement('div', 'task-wrapper');
-    taskWrapper.appendChild(_createTaskItem(task));
-
+  const _createIconContainer = (container, task) => {
     const iconContainer = createCustomElement('div', 'icon-container');
     const iconObj = {
       'edit-task-btn': 'fa-pen-to-square',
       'move-project-btn': 'fa-arrow-right-from-bracket',
       'trash-btn': 'fa-trash',
     };
-    Object.entries(iconObj).forEach((entry) => {
+    Object.entries(iconObj).forEach((entry, index) => {
       const [btnClass, fontAwesomeClass] = entry;
-      iconContainer.appendChild(_createTaskIcon(btnClass, fontAwesomeClass));
+      const icon = _createTaskIcon(btnClass, fontAwesomeClass);
+      if (index === 2) {
+        icon.onclick = () => {
+          const projectName = doc.querySelector(`label.task[task-id=${task.taskId}]`).getAttribute('project');
+          storage.deleteTask(projectName, task.taskId);
+          // Removes divider
+          container.nextElementSibling.remove();
+          container.remove();
+        };
+      }
+      iconContainer.appendChild(icon);
     });
-    taskWrapper.appendChild(iconContainer);
+    return iconContainer;
+  };
+  const _createTaskDivs = (task, taskContainer) => {
+    const container = createCustomElement('div', 'container');
+    container.setAttribute('task-id', task.taskId);
+
+    const taskWrapper = createCustomElement('div', 'task-wrapper');
+    taskWrapper.appendChild(_createTaskItem(task));
+
+    taskWrapper.appendChild(_createIconContainer(container, task));
 
     container.appendChild(taskWrapper);
     container.appendChild(_createTaskDetails(task));
@@ -109,7 +123,7 @@ import createCustomElement from './helper';
   };
   const _loadProjectTasks = (e) => {
     const projectName = e.target.textContent;
-    const project = storage.projects.find((obj) => obj.name === projectName);
+    const project = storage.getProject(projectName);
 
     doc.querySelector('.title').textContent = projectName;
     const container = doc.querySelector('.task-container');

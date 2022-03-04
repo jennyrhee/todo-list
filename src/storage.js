@@ -26,8 +26,14 @@ const storage = (function () {
   const createProject = (form) => {
     const newProject = Project(form.elements.project.value);
     projects.push(newProject);
-    localStorage.setItem('projects', JSON.stringify(storage.projects));
+    localStorage.setItem('projects', JSON.stringify(projects));
     return newProject;
+  };
+  const getProject = (projectName) => {
+    const project = projects.find(
+      (obj) => obj.name === projectName,
+    );
+    return project;
   };
   const createTask = (form) => {
     const newTask = Task(
@@ -37,13 +43,16 @@ const storage = (function () {
       form.elements['project-list'].value,
       form.elements.priority.value,
     );
-    const project = projects.find(
-      (obj) => obj.name === form.elements['project-list'].value,
-    );
+    const project = getProject(form.elements['project-list'].value);
     project.addTask(newTask);
-    localStorage.setItem('projects', JSON.stringify(storage.projects));
+    localStorage.setItem('projects', JSON.stringify(projects));
 
     return newTask;
+  };
+  const deleteTask = (projectName, taskId) => {
+    const project = getProject(projectName);
+    project.removeTask(taskId);
+    localStorage.setItem('projects', JSON.stringify(projects));
   };
   (() => {
     if (!localStorage.getItem('projects')) {
@@ -55,6 +64,8 @@ const storage = (function () {
     projects,
     createProject,
     createTask,
+    deleteTask,
+    getProject,
   };
 }());
 
