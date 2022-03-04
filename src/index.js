@@ -208,8 +208,13 @@ import createCustomElement from './helper';
       accordion.classList.toggle('is-open');
       const projects = doc.querySelectorAll('.project');
       projects.forEach((project) => {
-        if (project.style.maxHeight) project.style.maxHeight = null;
-        else project.style.maxHeight = `${project.scrollHeight}px`;
+        if (project.style.maxHeight) {
+          project.style.padding = null;
+          project.style.maxHeight = null;
+        } else {
+          project.style.padding = '5px';
+          project.style.maxHeight = `${project.scrollHeight + 10}px`;
+        }
       });
     };
   };

@@ -75,11 +75,6 @@ header {
   padding: 0;
 }
 
-#sidebar a {
-  margin-left: 20px;
-  margin-bottom: 0.5em;
-}
-
 #sidebar .section {
   display: flex;
   flex-direction: column;
@@ -99,6 +94,7 @@ header {
   align-items: center;
   padding: 0.1em;
   font-weight: bold;
+  margin-bottom: 2px;
 }
 
 #projects-accordion:before {
@@ -113,13 +109,23 @@ header {
   content: '\f107';
 }
 
-.project {
+.project,
+.date-org {
   cursor: pointer;
-  margin-left: 20px;
-  margin-top: 0.5em;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.project {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.2s ease-in-out;
+}
+
+.date-org:hover,
+.project:hover {
+  background-color: #fec89a;
 }
 
 #project-form {
@@ -157,12 +163,18 @@ button {
   transition: 0.2s;
 }
 
+#add-task-btn {
+  margin-top: 5px;
+}
+
 #add-project-btn {
-  color: #f9dcc4;
+  color: rgb(180, 180, 180);
+  opacity: 0.7;
 }
 
 #add-project-btn:hover {
-  color: black;
+  color: #fec89a;
+  opacity: 1;
 }
 
 #add-task-btn:hover {
