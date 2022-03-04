@@ -29,16 +29,22 @@ const Task = (name, description, dueDate, project, priority) => {
 };
 
 const Project = (name) => {
-  const tasks = [];
+  let tasks = [];
 
   const addTask = (task) => {
     tasks.push(task);
   };
+  const removeTask = (taskId) => {
+    tasks = tasks.filter((task) => task.taskId !== taskId);
+  };
 
   return {
     name,
-    tasks,
+    get tasks() {
+      return tasks;
+    },
     addTask,
+    removeTask,
   };
 };
 
