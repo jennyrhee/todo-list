@@ -31,6 +31,11 @@ import createCustomElement from './helper';
       }
     });
   };
+  const _updateNTasks = (projectName, isRemoved = false) => {
+    const nTasks = doc.querySelector(`.n-tasks[project-name='${projectName}']`);
+    if (isRemoved) nTasks.textContent = Number(nTasks.textContent) - 1;
+    else nTasks.textContent = Number(nTasks.textContent) + 1;
+  };
   const _createTaskDetails = (task) => {
     const detailsContainer = createCustomElement('div', 'details-container');
 
@@ -95,7 +100,10 @@ import createCustomElement from './helper';
       const icon = _createTaskIcon(btnClass, fontAwesomeClass);
       if (index === 2) {
         icon.onclick = () => {
-          const projectName = doc.querySelector(`label.task[task-id=${task.taskId}]`).getAttribute('project');
+          const projectName = doc
+            .querySelector(`label.task[task-id=${task.taskId}]`)
+            .getAttribute('project');
+          _updateNTasks(projectName, true);
           storage.deleteTask(projectName, task.taskId);
           // Removes divider
           container.nextElementSibling.remove();
@@ -122,7 +130,9 @@ import createCustomElement from './helper';
     taskContainer.appendChild(createCustomElement('hr', 'divider'));
   };
   const _loadProjectTasks = (e) => {
-    const projectName = e.target.textContent;
+    const projectName = e.target.classList.contains('n-tasks')
+      ? e.target.getAttribute('project-name')
+      : e.target.firstChild.textContent;
     const project = storage.getProject(projectName);
 
     doc.querySelector('.title').textContent = projectName;
@@ -184,6 +194,7 @@ import createCustomElement from './helper';
 
       const newTask = storage.createTask(form);
       _createTaskDivs(newTask, doc.querySelector('.task-container'));
+      _updateNTasks(form.elements['project-list'].value);
       form.reset();
     });
 
@@ -194,11 +205,20 @@ import createCustomElement from './helper';
       form,
     );
   };
+  const _createProjectWrapper = (project) => {
+    const wrapper = createCustomElement('div', 'project-wrapper');
+    wrapper.addEventListener('click', _loadProjectTasks);
+    wrapper.appendChild(createCustomElement('div', 'project', project.name));
+
+    const nTasks = createCustomElement('div', 'n-tasks', project.length);
+    nTasks.setAttribute('project-name', project.name);
+    wrapper.appendChild(nTasks);
+
+    return wrapper;
+  };
   const _addProjects = (projects) => {
     storage.projects.forEach((project) => {
-      const div = createCustomElement('div', 'project', project.name);
-      div.addEventListener('click', _loadProjectTasks);
-      projects.appendChild(div);
+      projects.appendChild(_createProjectWrapper(project));
     });
   };
   const _initAccordion = () => {
@@ -206,14 +226,14 @@ import createCustomElement from './helper';
     _addProjects(doc.getElementById('projects'));
     accordion.onclick = () => {
       accordion.classList.toggle('is-open');
-      const projects = doc.querySelectorAll('.project');
+      const projects = doc.querySelectorAll('.project-wrapper');
       projects.forEach((project) => {
         if (project.style.maxHeight) {
           project.style.padding = null;
           project.style.maxHeight = null;
         } else {
           project.style.padding = '5px';
-          project.style.maxHeight = `${project.scrollHeight + 10}px`;
+          project.style.maxHeight = `${project.scrollHeight + 20}px`;
         }
       });
     };

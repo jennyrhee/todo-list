@@ -43,6 +43,9 @@ const Project = (name) => {
     get tasks() {
       return tasks;
     },
+    get length() {
+      return tasks.length;
+    },
     addTask,
     removeTask,
   };

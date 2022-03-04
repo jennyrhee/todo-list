@@ -84,6 +84,7 @@ header {
 .projects-container .wrapper {
   display: flex;
   justify-content: space-between;
+  padding: 2px;
 }
 
 #projects-accordion {
@@ -109,22 +110,35 @@ header {
   content: '\f107';
 }
 
-.project,
+.project-wrapper,
 .date-org {
   cursor: pointer;
-  padding: 5px;
   border-radius: 5px;
   transition: background-color 0.2s ease-in-out;
 }
 
-.project {
+.project-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.n-tasks {
+  font-family: sans-serif;
+  text-align: right;
+  font-size: 0.7rem;
+  color: rgb(180, 180, 180);
+}
+
+.date-org {
+  padding: 5px;
 }
 
 .date-org:hover,
-.project:hover {
+.project-wrapper:hover {
   background-color: #fec89a;
 }
 
