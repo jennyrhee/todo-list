@@ -3,11 +3,12 @@ function createCustomElement(type = 'div', className = null, content = null) {
   if (className) element.classList.add(className);
   if (content) element.textContent = content;
 
-  if (className === 'project') {
+  if (className === 'project-wrapper') {
     if (
       document.getElementById('projects-accordion').classList.contains('is-open')
     ) {
-      element.style.maxHeight = '21px';
+      element.style.padding = '5px';
+      element.style.maxHeight = `${element.scrollHeight + 30}px`;
     }
   }
   return element;

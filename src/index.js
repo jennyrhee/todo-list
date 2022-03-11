@@ -153,6 +153,17 @@ import createCustomElement from './helper';
       doc.getElementById('add-task-btn').style.display = 'block';
     }
   };
+  const _createProjectWrapper = (project) => {
+    const wrapper = createCustomElement('div', 'project-wrapper');
+    wrapper.addEventListener('click', _loadProjectTasks);
+    wrapper.appendChild(createCustomElement('div', 'project', project.name));
+
+    const nTasks = createCustomElement('div', 'n-tasks', project.length.toString());
+    nTasks.setAttribute('project-name', project.name);
+    wrapper.appendChild(nTasks);
+
+    return wrapper;
+  };
   const _initProjectForm = () => {
     doc.getElementById('add-project-btn').onclick = _toggleForm.bind(
       this,
@@ -167,9 +178,7 @@ import createCustomElement from './helper';
       const newProject = storage.createProject(form);
       _addToDropdown(newProject);
 
-      const div = createCustomElement('div', 'project', newProject.name);
-      div.addEventListener('click', _loadProjectTasks);
-      doc.getElementById('projects').appendChild(div);
+      doc.getElementById('projects').appendChild(_createProjectWrapper(newProject));
 
       form.reset();
       _toggleForm('project-form');
@@ -204,17 +213,6 @@ import createCustomElement from './helper';
       'task-form',
       form,
     );
-  };
-  const _createProjectWrapper = (project) => {
-    const wrapper = createCustomElement('div', 'project-wrapper');
-    wrapper.addEventListener('click', _loadProjectTasks);
-    wrapper.appendChild(createCustomElement('div', 'project', project.name));
-
-    const nTasks = createCustomElement('div', 'n-tasks', project.length);
-    nTasks.setAttribute('project-name', project.name);
-    wrapper.appendChild(nTasks);
-
-    return wrapper;
   };
   const _addProjects = (projects) => {
     storage.projects.forEach((project) => {
