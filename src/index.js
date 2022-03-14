@@ -130,9 +130,7 @@ import createCustomElement from './helper';
     taskContainer.appendChild(createCustomElement('hr', 'divider'));
   };
   const _loadProjectTasks = (e) => {
-    const projectName = e.target.classList.contains('n-tasks')
-      ? e.target.getAttribute('project-name')
-      : e.target.firstChild.textContent;
+    const projectName = e.target.textContent;
     const project = storage.getProject(projectName);
 
     doc.querySelector('.title').textContent = projectName;
@@ -155,8 +153,9 @@ import createCustomElement from './helper';
   };
   const _createProjectWrapper = (project) => {
     const wrapper = createCustomElement('div', 'project-wrapper');
-    wrapper.addEventListener('click', _loadProjectTasks);
-    wrapper.appendChild(createCustomElement('div', 'project', project.name));
+    const projectName = createCustomElement('div', 'project', project.name);
+    projectName.addEventListener('click', _loadProjectTasks);
+    wrapper.appendChild(projectName);
 
     const nTasks = createCustomElement('div', 'n-tasks', project.length.toString());
     nTasks.setAttribute('project-name', project.name);
