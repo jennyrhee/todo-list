@@ -147,6 +147,10 @@ import createCustomElement from './helper';
     const container = doc.querySelector('.task-container');
     container.textContent = '';
     project.tasks.forEach((task) => _createTaskDivs(task, container));
+    // Change default project to currently selected project
+    doc.getElementById('project-list').selectedIndex = storage.projects.findIndex(
+      (proj) => proj.name === projectName,
+    );
   };
   const _addToDropdown = (project) => {
     const dropdown = doc.getElementById('project-list');
