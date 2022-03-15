@@ -151,6 +151,50 @@ import createCustomElement from './helper';
       doc.getElementById('add-task-btn').style.display = 'block';
     }
   };
+  const _createProjectMenuContent = (projectName) => {
+    const content = createCustomElement('div', 'project-menu-content');
+    const edit = createCustomElement(
+      'div',
+      'option',
+      'Edit project',
+      'edit-option',
+    );
+    const del = createCustomElement(
+      'div',
+      'option',
+      'Delete project',
+      'delete-option',
+    );
+    del.onclick = () => {
+      storage.deleteProject(projectName);
+      content.parentNode.parentNode.remove();
+    };
+    content.appendChild(edit);
+    content.appendChild(del);
+
+    return content;
+  };
+  const _createProjectMenu = (projectName) => {
+    const menu = createCustomElement('div', 'project-menu');
+    // menu.setAttribute('project-name', projectName);
+    const btn = createCustomElement('div', 'project-menu-btn');
+    const content = _createProjectMenuContent(projectName);
+
+    menu.onclick = () => {
+      content.classList.toggle('show');
+    };
+    // TODO: Doesn't close other project menus if open
+    doc.addEventListener('click', (e) => {
+      if (
+        !e.target.matches('.project-menu-btn')
+        && content.classList.contains('show')
+      ) content.classList.remove('show');
+    });
+    menu.appendChild(btn);
+    menu.appendChild(content);
+
+    return menu;
+  };
   const _createProjectWrapper = (project) => {
     const wrapper = createCustomElement('div', 'project-wrapper');
     const projectName = createCustomElement('div', 'project', project.name);
@@ -165,28 +209,7 @@ import createCustomElement from './helper';
     nTasks.setAttribute('project-name', project.name);
     wrapper.appendChild(nTasks);
 
-    const menu = createCustomElement('div', 'project-menu');
-    const btn = createCustomElement('div', 'project-menu-btn');
-    const content = createCustomElement('div', 'project-menu-content');
-    content.appendChild(
-      createCustomElement('div', 'option', 'Edit project', 'edit-option'),
-    );
-    content.appendChild(
-      createCustomElement('div', 'option', 'Delete project', 'delete-option'),
-    );
-    menu.onclick = () => {
-      content.classList.toggle('show');
-    };
-    // TODO: Doesn't close other project menus if open
-    doc.addEventListener('click', (e) => {
-      if (
-        !e.target.matches('.project-menu-btn')
-        && content.classList.contains('show')
-      ) content.classList.remove('show');
-    });
-    menu.appendChild(btn);
-    menu.appendChild(content);
-    wrapper.appendChild(menu);
+    wrapper.appendChild(_createProjectMenu(project.name));
 
     return wrapper;
   };

@@ -19,7 +19,7 @@ const storage = (function () {
     return projects;
   };
 
-  const projects = localStorage.getItem('projects')
+  let projects = localStorage.getItem('projects')
     ? parseJSON()
     : [Project('My Tasks')];
 
@@ -34,6 +34,10 @@ const storage = (function () {
       (obj) => obj.name === projectName,
     );
     return project;
+  };
+  const deleteProject = (projectName) => {
+    projects = projects.filter((project) => project.name !== projectName);
+    localStorage.setItem('projects', JSON.stringify(projects));
   };
   const createTask = (form) => {
     const newTask = Task(
@@ -61,8 +65,11 @@ const storage = (function () {
   })();
 
   return {
-    projects,
+    get projects() {
+      return projects;
+    },
     createProject,
+    deleteProject,
     createTask,
     deleteTask,
     getProject,
