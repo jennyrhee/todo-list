@@ -118,6 +118,7 @@ header {
 }
 
 .project-wrapper {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,10 +132,76 @@ header {
 }
 
 .n-tasks {
+  justify-self: center;
+  width: 30px;
   font-family: sans-serif;
   text-align: right;
   font-size: 0.7rem;
   color: rgb(180, 180, 180);
+}
+
+.project-menu {
+  position: relative;
+  z-index: 1;
+}
+
+.project-menu-btn {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: -11px;
+}
+
+.project-menu-btn:after {
+  content: '\2026';
+  font-size: 1.6rem;
+}
+
+.n-tasks:hover {
+  display: none;
+}
+
+.n-tasks:hover + .project-menu > .project-menu-btn {
+  display: block;
+}
+
+.project-menu-content {
+  display: none;
+  position: fixed;
+  left: 14em;
+  z-index: 1;
+  min-width: 160px;
+  background-color: #fcd5ce;
+  border-radius: 2px;
+  box-shadow: 5px 5px 8px 0px rgba(109, 109, 109, 0.2);
+}
+
+.project-menu-content.show {
+  display: block;
+}
+
+.option {
+  padding: 0.3em;
+  transition: 0.2s ease-in-out;
+}
+
+#edit-option:before {
+  font-family: 'Font Awesome\ 6 Free';
+  font-weight: 900;
+  content: '\f303';
+  padding-left: 0.5em;
+  padding-right: 1em;
+}
+
+#delete-option:before {
+  font-family: 'Font Awesome 6 Free';
+  content: '\f2ed';
+  padding-left: 0.5em;
+  padding-right: 1em;
+}
+
+.option:hover {
+  background-color: #ffb5a7;
 }
 
 .date-org {

@@ -157,9 +157,36 @@ import createCustomElement from './helper';
     projectName.addEventListener('click', _loadProjectTasks);
     wrapper.appendChild(projectName);
 
-    const nTasks = createCustomElement('div', 'n-tasks', project.length.toString());
+    const nTasks = createCustomElement(
+      'div',
+      'n-tasks',
+      project.length.toString(),
+    );
     nTasks.setAttribute('project-name', project.name);
     wrapper.appendChild(nTasks);
+
+    const menu = createCustomElement('div', 'project-menu');
+    const btn = createCustomElement('div', 'project-menu-btn');
+    const content = createCustomElement('div', 'project-menu-content');
+    content.appendChild(
+      createCustomElement('div', 'option', 'Edit project', 'edit-option'),
+    );
+    content.appendChild(
+      createCustomElement('div', 'option', 'Delete project', 'delete-option'),
+    );
+    menu.onclick = () => {
+      content.classList.toggle('show');
+    };
+    // TODO: Doesn't close other project menus if open
+    doc.addEventListener('click', (e) => {
+      if (
+        !e.target.matches('.project-menu-btn')
+        && content.classList.contains('show')
+      ) content.classList.remove('show');
+    });
+    menu.appendChild(btn);
+    menu.appendChild(content);
+    wrapper.appendChild(menu);
 
     return wrapper;
   };
@@ -177,7 +204,9 @@ import createCustomElement from './helper';
       const newProject = storage.createProject(form);
       _addToDropdown(newProject);
 
-      doc.getElementById('projects').appendChild(_createProjectWrapper(newProject));
+      doc
+        .getElementById('projects')
+        .appendChild(_createProjectWrapper(newProject));
 
       form.reset();
       _toggleForm('project-form');
