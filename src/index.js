@@ -120,7 +120,6 @@ import createCustomElement from './helper';
 
     const taskWrapper = createCustomElement('div', 'task-wrapper');
     taskWrapper.appendChild(_createTaskItem(task));
-
     taskWrapper.appendChild(_createIconContainer(container, task));
 
     container.appendChild(taskWrapper);
@@ -264,7 +263,12 @@ import createCustomElement from './helper';
       e.preventDefault();
 
       const newTask = storage.createTask(form);
-      _createTaskDivs(newTask, doc.querySelector('.task-container'));
+      if (
+        form.elements['project-list'].value
+        === doc.querySelector('.title').textContent
+      ) {
+        _createTaskDivs(newTask, doc.querySelector('.task-container'));
+      }
       _updateNTasks(form.elements['project-list'].value);
       form.reset();
     });
