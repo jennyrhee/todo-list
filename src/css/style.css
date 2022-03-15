@@ -209,7 +209,8 @@ header {
 }
 
 .date-org:hover,
-.project-wrapper:hover {
+.project-wrapper:hover,
+.active {
   background-color: #fec89a;
 }
 

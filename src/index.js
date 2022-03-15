@@ -129,7 +129,18 @@ import createCustomElement from './helper';
 
     taskContainer.appendChild(createCustomElement('hr', 'divider'));
   };
+  const _highlightActiveProject = (e) => {
+    const activeWrapper = e.target.parentNode;
+    activeWrapper.classList.toggle('active');
+    const wrappers = doc.querySelectorAll('.project-wrapper');
+    wrappers.forEach((wrapper) => {
+      if (wrapper.classList.contains('active') && wrapper !== activeWrapper) {
+        wrapper.classList.toggle('active');
+      }
+    });
+  };
   const _loadProjectTasks = (e) => {
+    _highlightActiveProject(e);
     const projectName = e.target.textContent;
     const project = storage.getProject(projectName);
 
