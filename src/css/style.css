@@ -128,7 +128,16 @@ header {
 }
 
 .project {
+  display: flex;
+  align-items: center;
   width: 100%;
+}
+
+.project:before {
+  font-family: 'Font Awesome 6 Free';
+  content: '\f111';
+  font-size: 0.6rem;
+  padding-right: 0.7em;
 }
 
 .n-tasks {
@@ -206,6 +215,18 @@ header {
 
 .date-org {
   padding: 5px;
+}
+
+#today:before {
+  font-family: 'Font Awesome 6 Free';
+  content: '\f133';
+  padding-right: 0.5em;
+}
+
+#upcoming:before {
+  font-family: 'Font Awesome 6 Free';
+  content: '\f073';
+  padding-right: 0.5em;
 }
 
 .date-org:hover,
