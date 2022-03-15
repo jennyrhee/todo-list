@@ -128,18 +128,24 @@ import createCustomElement from './helper';
 
     taskContainer.appendChild(createCustomElement('hr', 'divider'));
   };
-  const _highlightActiveProject = (e) => {
-    const activeWrapper = e.target.parentNode;
-    activeWrapper.classList.toggle('active');
+  const _highlightActive = (e) => {
+    const active = e.target.matches('.project') ? e.target.parentNode : e.target;
+    active.classList.toggle('active');
     const wrappers = doc.querySelectorAll('.project-wrapper');
     wrappers.forEach((wrapper) => {
-      if (wrapper.classList.contains('active') && wrapper !== activeWrapper) {
+      if (wrapper.classList.contains('active') && wrapper !== active) {
         wrapper.classList.toggle('active');
+      }
+    });
+    const dateOrgs = doc.querySelectorAll('.date-org');
+    dateOrgs.forEach((dateOrg) => {
+      if (dateOrg.classList.contains('active') && dateOrg !== active) {
+        dateOrg.classList.toggle('active');
       }
     });
   };
   const _loadProjectTasks = (e) => {
-    _highlightActiveProject(e);
+    _highlightActive(e);
     const projectName = e.target.textContent;
     const project = storage.getProject(projectName);
 
@@ -306,11 +312,40 @@ import createCustomElement from './helper';
       });
     };
   };
+  const _showDateOrg = (dateCategory) => {
+    doc.querySelector('.title').textContent = dateCategory === 'Today'
+      ? dateCategory
+      : 'Upcoming - due in the next 7 days';
+    const container = doc.querySelector('.task-container');
+    container.textContent = '';
+
+    const tasks = [];
+    storage.projects.forEach((project) => project.tasks.forEach((task) => {
+      if (dateCategory === 'Today'
+        && (new Date(task.dueDate).toDateString() === new Date().toDateString()
+          || !task.dueDate)) {
+        tasks.push(task);
+      // TODO: This just adds all tasks for now. Need to change to tasks within 7 days.
+      } else if (dateCategory === 'Upcoming') {
+        tasks.push(task);
+      }
+    }));
+    tasks.forEach((task) => _createTaskDivs(task, container));
+  };
+  const _initDateOrg = () => {
+    const dateOrgs = doc.querySelectorAll('.date-org');
+    dateOrgs.forEach((dateOrg) => dateOrg.addEventListener('click', (e) => {
+      _highlightActive(e);
+      _showDateOrg(e.target.textContent);
+    }));
+  };
 
   (() => {
+    _showDateOrg('Today');
     _initProjectForm();
     _initTaskForm();
     _initAccordion();
+    _initDateOrg();
 
     doc.querySelector('.menu-btn').onclick = () => {
       doc.getElementById('sidebar').classList.toggle('hidden');
