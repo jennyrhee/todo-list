@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import { titleCase } from 'title-case';
-import isEqual from 'date-fns/isEqual';
-import isBefore from 'date-fns/isBefore';
+import { isEqual, isBefore, differenceInCalendarDays } from 'date-fns';
 import './css/style.css';
 import storage from './storage';
 import createCustomElement from './helper';
@@ -34,7 +33,7 @@ import createCustomElement from './helper';
     });
   };
   const _updateNTasks = (projectName, isRemoved = false) => {
-    const nTasks = doc.querySelector(`.n-tasks[project-name='${projectName}']`);
+    const nTasks = doc.querySelector(`.n-tasks[project-name="${projectName}"]`);
     if (isRemoved) nTasks.textContent = Number(nTasks.textContent) - 1;
     else nTasks.textContent = Number(nTasks.textContent) + 1;
   };
@@ -336,8 +335,9 @@ import createCustomElement from './helper';
           || isBefore(new Date(task.dueDate), new Date())
           || !task.dueDate)) {
         tasks.push(task);
-      // TODO: This just adds all tasks for now. Need to change to tasks within 7 days.
-      } else if (dateCategory === 'Upcoming') {
+      } else if (dateCategory === 'Upcoming'
+        && differenceInCalendarDays(new Date(task.dueDate), new Date()) >= 0
+        && differenceInCalendarDays(new Date(task.dueDate), new Date()) <= 7) {
         tasks.push(task);
       }
     }));
