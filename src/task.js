@@ -1,9 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-const Task = (name, description, dueDate, project, priority) => {
-  let _isCompleted = false;
+const Task = (name, description, dueDate, project, priority, isCompleted = false) => {
   const taskId = `_${Math.random().toString(36).substring(2, 9)}`;
 
-  const getCompleted = () => _isCompleted;
   const getDetails = () => ({
     name,
     description,
@@ -12,7 +10,8 @@ const Task = (name, description, dueDate, project, priority) => {
     due: dueDate,
   });
   const toggleComplete = () => {
-    _isCompleted = !_isCompleted;
+    // eslint-disable-next-line no-param-reassign
+    isCompleted = !isCompleted;
   };
 
   return {
@@ -22,7 +21,9 @@ const Task = (name, description, dueDate, project, priority) => {
     dueDate,
     project,
     priority,
-    getCompleted,
+    get isCompleted() {
+      return isCompleted;
+    },
     getDetails,
     toggleComplete,
   };

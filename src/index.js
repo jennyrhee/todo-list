@@ -64,7 +64,10 @@ import createCustomElement from './helper';
     const check = doc.createElement('input');
     check.type = 'checkbox';
     check.id = task.taskId;
-    check.onclick = () => task.toggleComplete();
+    check.onclick = () => {
+      storage.toggleTask(task);
+      taskItem.classList.toggle('completed');
+    };
 
     const label = createCustomElement('label', 'task', task.name);
     label.setAttribute('project', task.project);
@@ -74,6 +77,11 @@ import createCustomElement from './helper';
         .querySelector(`.details-container[task-id=${task.taskId}]`)
         .classList.toggle('hidden');
     };
+
+    if (task.isCompleted) {
+      check.checked = true;
+      taskItem.classList.add('completed');
+    }
 
     taskItem.appendChild(check);
     taskItem.appendChild(label);

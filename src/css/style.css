@@ -384,7 +384,6 @@ select {
   background-color: #f9dcc4;
 }
 
-
 .task-item {
   display: flex;
   align-items: center;
@@ -410,6 +409,7 @@ select {
   margin: 0;
 }
 
+.completed,
 input[type=checkbox]:checked + label {
   text-decoration: line-through;
 }

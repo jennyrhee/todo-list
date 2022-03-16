@@ -13,6 +13,7 @@ const storage = (function () {
           taskJSON.dueDate,
           taskJSON.project,
           taskJSON.priority,
+          taskJSON.isCompleted,
         );
       });
     });
@@ -58,6 +59,10 @@ const storage = (function () {
     project.removeTask(taskId);
     localStorage.setItem('projects', JSON.stringify(projects));
   };
+  const toggleTask = (task) => {
+    task.toggleComplete();
+    localStorage.setItem('projects', JSON.stringify(projects));
+  };
   (() => {
     if (!localStorage.getItem('projects')) {
       localStorage.setItem('projects', JSON.stringify(projects));
@@ -73,6 +78,7 @@ const storage = (function () {
     createTask,
     deleteTask,
     getProject,
+    toggleTask,
   };
 }());
 
