@@ -54,8 +54,8 @@
           </div>
         </div>
         <div class="button-container">
-          <button id="submit-task-btn" type="submit" disabled="true">Add task</button>
-          <button id="cancel-task-btn" type="button">Cancel</button>
+          <button id="submit-task-btn" type="submit" class="form-btn" disabled="true">Add task</button>
+          <button id="cancel-task-btn" type="button" class="form-btn">Cancel</button>
         </div>
       </form>
     </div>
@@ -75,8 +75,17 @@
     <label for="project">Name</label>
     <input type="text" name="project" id="project">
     <div class="button-container">
-      <button type="submit" id="submit-project-btn" disabled="true">Add</button>
-      <button type="button" id="cancel-project-btn">Cancel</button>
+      <button type="submit" id="submit-project-btn" class="form-btn" disabled="true">Add</button>
+      <button type="button" id="cancel-project-btn" class="form-btn">Cancel</button>
+    </div>
+  </form>
+  <form action="" id="edit-project-form">
+    <h2></h2>
+    <label for="new-name">New Name</label>
+    <input type="text" name="new-name" id="new-name">
+    <div class="button-container">
+      <button type="submit" id="edit-project-btn" class="form-btn" disabled="true">Edit</button>
+      <button type="button" id="cancel-edit-project-btn" class="form-btn">Cancel</button>
     </div>
   </form>
 
