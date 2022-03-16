@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import { titleCase } from 'title-case';
+import isEqual from 'date-fns/isEqual';
+import isBefore from 'date-fns/isBefore';
 import './css/style.css';
 import storage from './storage';
 import createCustomElement from './helper';
@@ -330,7 +332,8 @@ import createCustomElement from './helper';
     const tasks = [];
     storage.projects.forEach((project) => project.tasks.forEach((task) => {
       if (dateCategory === 'Today'
-        && (new Date(task.dueDate).toDateString() === new Date().toDateString()
+        && (isEqual(new Date(task.dueDate), new Date())
+          || isBefore(new Date(task.dueDate), new Date())
           || !task.dueDate)) {
         tasks.push(task);
       // TODO: This just adds all tasks for now. Need to change to tasks within 7 days.

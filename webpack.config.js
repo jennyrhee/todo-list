@@ -1,3 +1,8 @@
+/* eslint-disable import/no-import-module-exports */
+import webpack from 'webpack';
+// eslint-disable-next-line import/named
+import { supportedLocales } from './config';
+
 const path = require('path');
 
 module.exports = {
@@ -14,8 +19,19 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
-      }
-    ]
-  }
-}
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+};
+
+const config = {
+  plugins: [
+    new webpack.ContextReplacementPlugin(
+      /^date-fns[/\\]locale$/,
+      new RegExp(`\\.[/\\\\](${supportedLocales.join('|')})[/\\\\]index\\.js$`),
+    ),
+  ],
+};
+
+export default config;
