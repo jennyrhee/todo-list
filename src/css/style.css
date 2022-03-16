@@ -392,7 +392,7 @@ select {
 
 .details-container {
   display: flex;
-  gap: 40%;
+  gap: min(8vw, 150px);
   border: 1px solid grey;
   border-radius: 5px;
   padding: 0.5em;
@@ -400,6 +400,10 @@ select {
   margin: 0 1.5em 1em 1.5em;
   overflow: hidden;
   transition: 0.1s ease-in-out;
+}
+
+.details-container div {
+  width: min(20vw, 250px);
 }
 
 .details-container.hidden {
