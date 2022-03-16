@@ -1,3 +1,9 @@
+function toggleClass(className, id = null, element = null, query = null) {
+  if (id) document.getElementById(id).classList.toggle(className);
+  if (element) element.classList.toggle(className);
+  if (query) document.querySelector(query).classList.toggle('hidden');
+}
+
 function createCustomElement(
   type = 'div',
   className = null,
@@ -22,4 +28,8 @@ function createCustomElement(
   return element;
 }
 
-export default createCustomElement;
+function bindFormFunction(id, fn, formId) {
+  document.getElementById(id).onclick = fn.bind(this, formId);
+}
+
+export { toggleClass, createCustomElement, bindFormFunction };

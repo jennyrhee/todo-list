@@ -4,19 +4,16 @@ import { titleCase } from 'title-case';
 import { isEqual, isBefore, differenceInCalendarDays } from 'date-fns';
 import './css/style.css';
 import storage from './storage';
-import createCustomElement from './helper';
+import { toggleClass, createCustomElement, bindFormFunction } from './helper';
 
 ((doc) => {
-  const _toggleMask = () => {
-    doc.getElementById('mask').classList.toggle('show');
-  };
   const _toggleForm = (formId) => {
     if (formId === 'task-form') {
       doc.getElementById('add-task-btn').style.display = 'none';
-    } else if (formId === 'project-form') {
-      _toggleMask();
+    } else if (['project-form', 'edit-project-form'].includes(formId)) {
+      toggleClass('show', 'mask');
     }
-    doc.getElementById(formId).classList.toggle('show');
+    toggleClass('show', formId);
   };
   const _disableBtnWhenEmpty = (id, btn) => {
     doc.getElementById(id).addEventListener('keyup', (e) => {
@@ -67,17 +64,13 @@ import createCustomElement from './helper';
     check.id = task.taskId;
     check.onclick = () => {
       storage.toggleTask(task);
-      taskItem.classList.toggle('completed');
+      toggleClass('completed', null, taskItem);
     };
 
     const label = createCustomElement('label', 'task', task.name);
     label.setAttribute('project', task.project);
     label.setAttribute('task-id', task.taskId);
-    label.onclick = () => {
-      doc
-        .querySelector(`.details-container[task-id=${task.taskId}]`)
-        .classList.toggle('hidden');
-    };
+    label.onclick = () => toggleClass('hidden', null, null, `.details-container[task-id=${task.taskId}]`);
 
     if (task.isCompleted) {
       check.checked = true;
@@ -139,17 +132,17 @@ import createCustomElement from './helper';
   };
   const _highlightActive = (e) => {
     const active = e.target.matches('.project') ? e.target.parentNode : e.target;
-    active.classList.toggle('active');
+    toggleClass('active', null, active);
     const wrappers = doc.querySelectorAll('.project-wrapper');
     wrappers.forEach((wrapper) => {
       if (wrapper.classList.contains('active') && wrapper !== active) {
-        wrapper.classList.toggle('active');
+        toggleClass('active', null, wrapper);
       }
     });
     const dateOrgs = doc.querySelectorAll('.date-org');
     dateOrgs.forEach((dateOrg) => {
       if (dateOrg.classList.contains('active') && dateOrg !== active) {
-        dateOrg.classList.toggle('active');
+        toggleClass('active', null, dateOrg);
       }
     });
   };
@@ -173,9 +166,9 @@ import createCustomElement from './helper';
     choice.value = project.name;
     dropdown.appendChild(choice);
   };
-  const _cancelForm = (id, form) => {
+  const _cancelForm = (id) => {
     _toggleForm(id);
-    form.reset();
+    doc.getElementById(id).reset();
     if (id === 'task-form') {
       doc.getElementById('add-task-btn').style.display = 'block';
     }
@@ -194,6 +187,11 @@ import createCustomElement from './helper';
       'Delete project',
       'delete-option',
     );
+    edit.onclick = () => {
+      _toggleForm('edit-project-form');
+      doc.getElementById('new-name').value = projectName;
+      doc.querySelector('#edit-project-form > h2').textContent = `Edit: ${projectName}`;
+    };
     del.onclick = () => {
       storage.deleteProject(projectName);
       content.parentNode.parentNode.remove();
@@ -205,14 +203,11 @@ import createCustomElement from './helper';
   };
   const _createProjectMenu = (projectName) => {
     const menu = createCustomElement('div', 'project-menu');
-    // menu.setAttribute('project-name', projectName);
     const btn = createCustomElement('div', 'project-menu-btn');
     const content = _createProjectMenuContent(projectName);
 
-    menu.onclick = () => {
-      content.classList.toggle('show');
-    };
-    // TODO: Doesn't close other project menus if open
+    menu.onclick = () => toggleClass('show', null, content);
+
     doc.addEventListener('click', (e) => {
       if (
         !e.target.matches('.project-menu-btn')
@@ -227,6 +222,7 @@ import createCustomElement from './helper';
   const _createProjectWrapper = (project) => {
     const wrapper = createCustomElement('div', 'project-wrapper');
     const projectName = createCustomElement('div', 'project', project.name);
+    projectName.setAttribute('project-name', project.name);
     projectName.addEventListener('click', _loadProjectTasks);
     wrapper.appendChild(projectName);
 
@@ -242,49 +238,50 @@ import createCustomElement from './helper';
 
     return wrapper;
   };
-  const _initProjectForm = () => {
-    doc.getElementById('add-project-btn').onclick = _toggleForm.bind(
-      this,
-      'project-form',
-    );
-    _disableBtnWhenEmpty('project', 'submit-project-btn');
+  const _editProject = (projectName) => {
+    const oldProjectName = doc
+      .querySelector('#edit-project-form > h2')
+      .textContent.split('Edit: ')[1];
+    storage.updateProject(oldProjectName, projectName);
 
-    const form = doc.getElementById('project-form');
+    const sidebarItem = doc.querySelector(`.project[project-name="${oldProjectName}"`);
+    sidebarItem.textContent = projectName;
+    sidebarItem.setAttribute('project-name', projectName);
+
+    const option = doc.querySelector(`#project-list > option[value="${oldProjectName}"]`);
+    option.value = projectName;
+    option.textContent = projectName;
+  };
+  const _initProjectForm = (inputId, submitBtn, cancelBtn, formId, add = true) => {
+    _disableBtnWhenEmpty(inputId, submitBtn);
+
+    const form = doc.getElementById(formId);
     form.addEventListener('submit', (e) => {
-      if (
-        storage.projects.find(
-          (project) => project.name === form.elements.project.value,
-        )
-      ) {
-        const field = doc.getElementById('project');
+      const projectName = add ? form.elements.project.value : form.elements['new-name'].value;
+      if (storage.projects.find((project) => project.name === projectName)) {
+        const field = doc.getElementById(inputId);
         field.setCustomValidity('A project with this name already exists!');
         field.reportValidity();
         e.preventDefault();
       } else {
         e.preventDefault();
-        const newProject = storage.createProject(form);
-        _addToDropdown(newProject);
+        if (add) {
+          const newProject = storage.createProject(form);
+          _addToDropdown(newProject);
 
-        doc
-          .getElementById('projects')
-          .appendChild(_createProjectWrapper(newProject));
+          doc
+            .getElementById('projects')
+            .appendChild(_createProjectWrapper(newProject));
+        } else _editProject(projectName);
 
         form.reset();
-        _toggleForm('project-form');
+        _toggleForm(formId);
       }
     });
 
-    doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(
-      this,
-      'project-form',
-      form,
-    );
+    bindFormFunction(cancelBtn, _cancelForm, formId);
   };
   const _initTaskForm = () => {
-    doc.getElementById('add-task-btn').onclick = _toggleForm.bind(
-      this,
-      'task-form',
-    );
     storage.projects.forEach((project) => _addToDropdown(project));
 
     const form = doc.getElementById('task-form');
@@ -292,6 +289,7 @@ import createCustomElement from './helper';
       e.preventDefault();
 
       const newTask = storage.createTask(form);
+      // Only add task to page if new task is in current project
       if (
         form.elements['project-list'].value
         === doc.querySelector('.title').textContent
@@ -303,11 +301,7 @@ import createCustomElement from './helper';
     });
 
     _disableBtnWhenEmpty('task', 'submit-task-btn');
-    doc.getElementById('cancel-task-btn').onclick = _cancelForm.bind(
-      this,
-      'task-form',
-      form,
-    );
+    bindFormFunction('cancel-task-btn', _cancelForm, 'task-form', form);
   };
   const _addProjects = (projects) => {
     storage.projects.forEach((project) => {
@@ -318,7 +312,7 @@ import createCustomElement from './helper';
     const accordion = doc.getElementById('projects-accordion');
     _addProjects(doc.getElementById('projects'));
     accordion.onclick = () => {
-      accordion.classList.toggle('is-open');
+      toggleClass('is-open', null, accordion);
       const projects = doc.querySelectorAll('.project-wrapper');
       projects.forEach((project) => {
         if (project.style.maxHeight) {
@@ -363,13 +357,14 @@ import createCustomElement from './helper';
 
   (() => {
     _showDateOrg('Today');
-    _initProjectForm();
+    _initProjectForm('project', 'submit-project-btn', 'cancel-project-btn', 'project-form');
+    _initProjectForm('new-name', 'edit-project-btn', 'cancel-edit-project-btn', 'edit-project-form', false);
     _initTaskForm();
     _initAccordion();
     _initDateOrg();
 
-    doc.querySelector('.menu-btn').onclick = () => {
-      doc.getElementById('sidebar').classList.toggle('hidden');
-    };
+    bindFormFunction('add-project-btn', _toggleForm, 'project-form');
+    bindFormFunction('add-task-btn', _toggleForm, 'task-form');
+    doc.querySelector('.menu-btn').onclick = () => toggleClass('hidden', 'sidebar');
   })();
 })(document);

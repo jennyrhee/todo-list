@@ -235,7 +235,8 @@ header {
   background-color: #fec89a;
 }
 
-#project-form {
+#project-form,
+#edit-project-form {
   display: none;
   flex-direction: column;
   position: fixed;
@@ -249,11 +250,13 @@ header {
   box-shadow: 1px 1px 5px rgb(66, 66, 66);
 }
 
-#project-form .button-container {
+#project-form .button-container,
+#edit-project-form .button-container {
   margin-top: 0.8em;
 }
 
-#project-form input {
+#project-form input,
+#edit-project-form input {
   border-radius: 5px;
   border: solid 1px;
   padding: 3px;
@@ -300,11 +303,13 @@ button {
 }
 
 #project-form.show,
+#edit-project-form.show,
 #task-form.show {
   display: flex;
 }
 
 #project-form input,
+#edit-project-form input,
 #task-form input {
   outline: none;
 }
@@ -329,10 +334,7 @@ select {
   margin-bottom: 0.5em;
 }
 
-#submit-project-btn,
-#cancel-project-btn,
-#submit-task-btn,
-#cancel-task-btn {
+.form-btn {
   font-size: 0.8rem;
   font-weight: bold;
   padding: 5px;
@@ -341,6 +343,7 @@ select {
 }
 
 #submit-project-btn,
+#edit-project-btn,
 #submit-task-btn {
   background-color: #fec89a;
 }

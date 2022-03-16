@@ -40,6 +40,11 @@ const storage = (function () {
     projects = projects.filter((project) => project.name !== projectName);
     localStorage.setItem('projects', JSON.stringify(projects));
   };
+  const updateProject = (projectName, newProjectName) => {
+    const project = getProject(projectName);
+    project.name = newProjectName;
+    localStorage.setItem('projects', JSON.stringify(projects));
+  };
   const createTask = (form) => {
     const newTask = Task(
       form.elements.task.value,
@@ -75,6 +80,7 @@ const storage = (function () {
     },
     createProject,
     deleteProject,
+    updateProject,
     createTask,
     deleteTask,
     getProject,
