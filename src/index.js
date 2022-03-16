@@ -101,13 +101,13 @@ import createCustomElement from './helper';
     const iconContainer = createCustomElement('div', 'icon-container');
     const iconObj = {
       'edit-task-btn': 'fa-pen-to-square',
-      'move-project-btn': 'fa-arrow-right-from-bracket',
+      // 'move-project-btn': 'fa-arrow-right-from-bracket',
       'trash-btn': 'fa-trash',
     };
     Object.entries(iconObj).forEach((entry, index) => {
       const [btnClass, fontAwesomeClass] = entry;
       const icon = _createTaskIcon(btnClass, fontAwesomeClass);
-      if (index === 2) {
+      if (index === 1) {
         icon.onclick = () => {
           const projectName = doc
             .querySelector(`label.task[task-id=${task.taskId}]`)
@@ -251,17 +251,27 @@ import createCustomElement from './helper';
 
     const form = doc.getElementById('project-form');
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
+      if (
+        storage.projects.find(
+          (project) => project.name === form.elements.project.value,
+        )
+      ) {
+        const field = doc.getElementById('project');
+        field.setCustomValidity('A project with this name already exists!');
+        field.reportValidity();
+        e.preventDefault();
+      } else {
+        e.preventDefault();
+        const newProject = storage.createProject(form);
+        _addToDropdown(newProject);
 
-      const newProject = storage.createProject(form);
-      _addToDropdown(newProject);
+        doc
+          .getElementById('projects')
+          .appendChild(_createProjectWrapper(newProject));
 
-      doc
-        .getElementById('projects')
-        .appendChild(_createProjectWrapper(newProject));
-
-      form.reset();
-      _toggleForm('project-form');
+        form.reset();
+        _toggleForm('project-form');
+      }
     });
 
     doc.getElementById('cancel-project-btn').onclick = _cancelForm.bind(
