@@ -194,6 +194,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     };
     del.onclick = () => {
       storage.deleteProject(projectName);
+      doc.querySelector(`#project-list > option[value="${projectName}"`).remove();
+      doc.querySelector(`#edit-project > option[value="${projectName}"`).remove();
       content.parentNode.parentNode.remove();
     };
     content.appendChild(edit);
@@ -267,7 +269,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
         e.preventDefault();
         if (add) {
           const newProject = storage.createProject(form);
-          _addToDropdown(newProject);
+          _addToDropdown('project-list', newProject);
+          _addToDropdown('edit-project', newProject);
 
           doc
             .getElementById('projects')
