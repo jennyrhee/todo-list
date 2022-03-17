@@ -88,6 +88,26 @@
       <button type="button" id="cancel-edit-project-btn" class="form-btn">Cancel</button>
     </div>
   </form>
+  <form action="" id="edit-task-form">
+    <h2>Edit task</h2>
+    <div class="form-content">
+      <input type="text" name="task" id="edit-name" placeholder="Task name">
+      <input type="text" name="description" id="edit-description" placeholder="Description">
+      <div class="wrapper">
+        <select name="project-list" id="edit-project"></select>
+        <input type="datetime-local" name="due-date" id="edit-dueDate">
+        <select name="priority" id="edit-priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </div>
+    <div class="button-container">
+      <button id="edit-task-btn" type="submit" class="form-btn" disabled="true">Edit task</button>
+      <button id="cancel-edit-task-btn" type="button" class="form-btn">Cancel</button>
+    </div>
+  </form>
 
   <script src="main.js"></script>
 </body>
