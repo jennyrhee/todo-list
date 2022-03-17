@@ -19,6 +19,15 @@ a {
   color: inherit;
 }
 
+input {
+  outline: none;
+}
+
+select {
+  background-color: inherit;
+  border-radius: 5px;
+}
+
 header {
   background-color: #ffb5a7;
   padding: 1em;
@@ -250,6 +259,20 @@ header {
   box-shadow: 1px 1px 5px rgb(66, 66, 66);
 }
 
+#edit-task-form {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8edeb;
+  padding: 1em;
+  width: max(500, 50vw);
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgb(66, 66, 66);
+}
+
 #project-form .button-container,
 #edit-project-form .button-container {
   margin-top: 0.8em;
@@ -304,25 +327,16 @@ button {
 
 #project-form.show,
 #edit-project-form.show,
-#task-form.show {
+#task-form.show,
+#edit-task-form.show {
   display: flex;
 }
 
-#project-form input,
-#edit-project-form input,
-#task-form input {
-  outline: none;
-}
-
-#task-form input {
+#task-form input,
+#edit-task-form input {
   border: none;
   margin: 0.5em 0.2em;
   background-color: inherit;
-}
-
-select {
-  background-color: inherit;
-  border-radius: 5px;
 }
 
 .form-content {
@@ -344,7 +358,8 @@ select {
 
 #submit-project-btn,
 #edit-project-btn,
-#submit-task-btn {
+#submit-task-btn,
+#edit-task-btn {
   background-color: #fec89a;
 }
 
@@ -395,7 +410,7 @@ select {
 
 .details-container {
   display: flex;
-  gap: min(8vw, 150px);
+  gap: min(6vw, 150px);
   border: 1px solid grey;
   border-radius: 5px;
   padding: 0.5em;

@@ -10,7 +10,7 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
   const _toggleForm = (formId) => {
     if (formId === 'task-form') {
       doc.getElementById('add-task-btn').style.display = 'none';
-    } else if (['project-form', 'edit-project-form'].includes(formId)) {
+    } else if (['project-form', 'edit-project-form', 'edit-task-form'].includes(formId)) {
       toggleClass('show', 'mask');
     }
     toggleClass('show', formId);
@@ -97,10 +97,25 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
       // 'move-project-btn': 'fa-arrow-right-from-bracket',
       'trash-btn': 'fa-trash',
     };
-    Object.entries(iconObj).forEach((entry, index) => {
+    Object.entries(iconObj).forEach((entry) => {
       const [btnClass, fontAwesomeClass] = entry;
       const icon = _createTaskIcon(btnClass, fontAwesomeClass);
-      if (index === 1) {
+      if (btnClass === 'edit-task-btn') {
+        icon.onclick = () => {
+          _toggleForm('edit-task-form');
+          const form = doc.getElementById('edit-task-form');
+          form.setAttribute('project', task.project);
+          form.setAttribute('task-id', task.taskId);
+          const details = task.getDetails();
+          // Prefill the form with task details
+          // eslint-disable-next-line no-restricted-syntax
+          for (const prop in details) {
+            if (details[prop]) {
+              doc.getElementById(`edit-${prop}`).value = details[prop];
+            }
+          }
+        };
+      } else if (btnClass === 'trash-btn') {
         icon.onclick = () => {
           const projectName = doc
             .querySelector(`label.task[task-id=${task.taskId}]`)
@@ -160,8 +175,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
       (proj) => proj.name === projectName,
     );
   };
-  const _addToDropdown = (project) => {
-    const dropdown = doc.getElementById('project-list');
+  const _addToDropdown = (listId, project) => {
+    const dropdown = doc.getElementById(listId);
     const choice = createCustomElement('option', null, project.name);
     choice.value = project.name;
     dropdown.appendChild(choice);
@@ -284,27 +299,46 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
 
     bindFormFunction(cancelBtn, _cancelForm, formId);
   };
-  const _initTaskForm = () => {
-    storage.projects.forEach((project) => _addToDropdown(project));
+  const _initTaskForm = (inputId, submitBtn, cancelBtn, listId, formId, add = true) => {
+    storage.projects.forEach((project) => _addToDropdown(listId, project));
 
-    const form = doc.getElementById('task-form');
+    const form = doc.getElementById(formId);
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const newTask = storage.createTask(form);
-      // Only add task to page if new task is in current project
-      if (
-        form.elements['project-list'].value
-        === doc.querySelector('.title').textContent
-      ) {
-        _createTaskDivs(newTask, doc.querySelector('.task-container'));
+      if (add) {
+        const newTask = storage.createTask(form);
+        // Only add task to page if new task is in current project
+        if (
+          form.elements[listId].value
+          === doc.querySelector('.title').textContent
+        ) {
+          _createTaskDivs(newTask, doc.querySelector('.task-container'));
+        }
+        _updateNTasks(form.elements[listId].value);
+      } else {
+        const projectName = form.getAttribute('project');
+        const taskId = form.getAttribute('task-id');
+        storage.updateTask(projectName, taskId, form);
+        if (projectName !== form.elements['edit-project'].value) {
+          _updateNTasks(projectName, true);
+          _updateNTasks(form.elements['edit-project'].value);
+          // Remove the task from the page if on former project
+          if (doc.querySelector('.title').textContent === projectName) {
+            const container = doc.querySelector(`.container[task-id="${taskId}"]`);
+            // Removes divider
+            container.nextElementSibling.remove();
+            container.remove();
+          }
+        }
+        _toggleForm(formId);
       }
-      _updateNTasks(form.elements['project-list'].value);
+
       form.reset();
     });
 
-    _disableBtnWhenEmpty('task', 'submit-task-btn');
-    bindFormFunction('cancel-task-btn', _cancelForm, 'task-form', form);
+    _disableBtnWhenEmpty(inputId, submitBtn);
+    bindFormFunction(cancelBtn, _cancelForm, formId);
   };
   const _addProjects = (projects) => {
     storage.projects.forEach((project) => {
@@ -362,7 +396,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     _showDateOrg('Today');
     _initProjectForm('project', 'submit-project-btn', 'cancel-project-btn', 'project-form');
     _initProjectForm('new-name', 'edit-project-btn', 'cancel-edit-project-btn', 'edit-project-form', false);
-    _initTaskForm();
+    _initTaskForm('task', 'submit-task-btn', 'cancel-task-btn', 'project-list', 'task-form');
+    _initTaskForm('edit-name', 'edit-task-btn', 'cancel-edit-task-btn', 'edit-project', 'edit-task-form', false);
     _initAccordion();
     _initDateOrg();
 

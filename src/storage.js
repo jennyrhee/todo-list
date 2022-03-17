@@ -59,6 +59,13 @@ const storage = (function () {
 
     return newTask;
   };
+  const getTask = (projectName, taskId) => {
+    const project = getProject(projectName);
+    const task = project.tasks.find(
+      (obj) => obj.taskId === taskId,
+    );
+    return task;
+  };
   const deleteTask = (projectName, taskId) => {
     const project = getProject(projectName);
     project.removeTask(taskId);
@@ -68,6 +75,23 @@ const storage = (function () {
     task.toggleComplete();
     localStorage.setItem('projects', JSON.stringify(projects));
   };
+  const updateTask = (projectName, taskId, form) => {
+    const task = getTask(projectName, taskId);
+    const elements = Array.from(form.elements).slice(0, 5);
+    elements.forEach((detail) => {
+      if (detail.value) {
+        const prop = detail.id.split('edit-')[1];
+        if (prop === 'project') {
+          createTask(form);
+          deleteTask(projectName, taskId);
+        } else {
+          task[prop] = detail.value;
+        }
+      }
+    });
+    localStorage.setItem('projects', JSON.stringify(projects));
+  };
+
   (() => {
     if (!localStorage.getItem('projects')) {
       localStorage.setItem('projects', JSON.stringify(projects));
@@ -83,7 +107,9 @@ const storage = (function () {
     updateProject,
     createTask,
     deleteTask,
+    updateTask,
     getProject,
+    getTask,
     toggleTask,
   };
 }());
