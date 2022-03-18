@@ -17,7 +17,7 @@ Live preview [here](https://jennyrhee.github.io/todo-list/).
 - There's a couple of minor UI bugs
   - Single tap on touchpad doesn't get project menu to appear vs. actually clicking
   - If editing a task and not changing the name, the edit task button stays disabled unless you trigger the event listener for input
-- Remove task when completed (vs. just striked out)
+- Remove task when completed (vs. just striked out) OR moving the completed tasks to the bottom of the list
 - Display date if there is a due date (outside of the task details)
 - Dynamic SVG for the icon next to Today that shows the day of the month
 - Custom checkbox (colored based on priority, hover effect)
