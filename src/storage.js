@@ -1,3 +1,4 @@
+import { format, addDays } from 'date-fns';
 import { Project, Task } from './task';
 
 // eslint-disable-next-line func-names
@@ -49,7 +50,7 @@ const storage = (function () {
     const newTask = Task(
       form.elements.task.value,
       form.elements.description.value,
-      form.elements['due-date'].value,
+      format(form.elements['due-date'].value, 'PPp'),
       form.elements['project-list'].value,
       form.elements.priority.value,
     );
@@ -94,6 +95,28 @@ const storage = (function () {
 
   (() => {
     if (!localStorage.getItem('projects')) {
+      projects[0].addTask(Task(
+        'Example task with a description that is due today',
+        'Descriptions and due dates are not required.',
+        format(new Date(), 'PPp'),
+        'My Tasks',
+        'high',
+      ));
+      projects[0].addTask(Task(
+        'Example task and is due next week',
+        '',
+        format(addDays(new Date(), 7), 'Ppp'),
+        'My Tasks',
+        'low',
+      ));
+      projects[0].addTask(Task(
+        'Completed task with no due date',
+        '',
+        '',
+        'My Tasks',
+        'high',
+        true,
+      ));
       localStorage.setItem('projects', JSON.stringify(projects));
     }
   })();
