@@ -1,4 +1,4 @@
-import { format, addDays } from 'date-fns';
+import { parseISO, format, addDays } from 'date-fns';
 import { Project, Task } from './task';
 
 // eslint-disable-next-line func-names
@@ -47,10 +47,11 @@ const storage = (function () {
     localStorage.setItem('projects', JSON.stringify(projects));
   };
   const createTask = (form) => {
+    const date = (form.elements['due-date'].value) ? format(parseISO(form.elements['due-date'].value), 'PPp') : '';
     const newTask = Task(
       form.elements.task.value,
       form.elements.description.value,
-      format(form.elements['due-date'].value, 'PPp'),
+      date,
       form.elements['project-list'].value,
       form.elements.priority.value,
     );
