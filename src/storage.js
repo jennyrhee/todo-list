@@ -83,7 +83,7 @@ const storage = (function () {
     elements.forEach((detail) => {
       if (detail.value) {
         const prop = detail.id.split('edit-')[1];
-        if (prop === 'project') {
+        if (prop === 'project' && projectName !== detail.value) {
           createTask(form);
           deleteTask(projectName, taskId);
         } else {
