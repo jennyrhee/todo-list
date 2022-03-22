@@ -318,6 +318,10 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
         const projectName = form.getAttribute('project');
         const taskId = form.getAttribute('task-id');
         storage.updateTask(projectName, taskId, form);
+        const detailsContainer = doc.querySelector(`.details-container[task-id="${taskId}"]`);
+        detailsContainer.replaceWith(_createTaskDetails(storage.getTask(projectName, taskId)));
+        doc.querySelector(`label[task-id="${taskId}"`).textContent = form.elements['edit-name'].value;
+
         if (projectName !== form.elements['edit-project'].value) {
           _updateNTasks(projectName, true);
           _updateNTasks(form.elements['edit-project'].value);
