@@ -309,10 +309,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
       if (add) {
         const newTask = storage.createTask(form);
         // Only add task to page if new task is in current project
-        if (
-          form.elements[listId].value
-          === doc.querySelector('.title').textContent
-        ) {
+        const current = doc.querySelector('.title').textContent;
+        if (form.elements[listId].value === current || current === 'Today') {
           _createTaskDivs(newTask, doc.querySelector('.task-container'));
         }
         _updateNTasks(form.elements[listId].value);

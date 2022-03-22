@@ -28,7 +28,7 @@ select {
   border-radius: 5px;
 }
 
-button {
+button:enabled {
   background-color: inherit;
   cursor: pointer;
   color: black;
