@@ -17,11 +17,7 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
   };
   const _disableBtnWhenEmpty = (id, btn) => {
     doc.getElementById(id).addEventListener('keyup', (e) => {
-      if (e.target.value === '') {
-        doc.getElementById(btn).disabled = true;
-      } else {
-        doc.getElementById(btn).disabled = false;
-      }
+      doc.getElementById(btn).disabled = e.target.value === '';
     });
     doc.getElementById(id).addEventListener('enter', (e) => {
       if (e.target.value === '') {
@@ -35,41 +31,40 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     else nTasks.textContent = Number(nTasks.textContent) + 1;
   };
   const _createTaskDetails = (task) => {
-    const detailsContainer = createCustomElement('div', 'details-container');
+    const detailsContainer = createCustomElement(
+      'div',
+      ['details-container', 'hidden'],
+      null,
+      { 'task-id': task.taskId },
+    );
 
     const colOne = doc.createElement('div');
     const colTwo = doc.createElement('div');
     Object.entries(task.getDetails()).forEach((entry, i) => {
       const [key, detail] = entry;
-      const div = createCustomElement(
-        'div',
-        null,
-        `${titleCase(key)}: ${detail}`,
-      );
+      const div = createCustomElement('div', null, `${titleCase(key)}: ${detail}`);
       if (i < 2) colOne.appendChild(div);
       else colTwo.appendChild(div);
     });
     detailsContainer.appendChild(colOne);
     detailsContainer.appendChild(colTwo);
-    detailsContainer.classList.add('hidden');
-    detailsContainer.setAttribute('task-id', task.taskId);
 
     return detailsContainer;
   };
   const _createTaskItem = (task) => {
-    const taskItem = createCustomElement('div', 'task-item');
+    const taskItem = createCustomElement('div', ['task-item']);
 
-    const check = doc.createElement('input');
+    const check = createCustomElement('input', null, null, { id: task.taskId });
     check.type = 'checkbox';
-    check.id = task.taskId;
     check.onclick = () => {
       storage.toggleTask(task);
       toggleClass('completed', null, taskItem);
     };
 
-    const label = createCustomElement('label', 'task', task.name);
-    label.setAttribute('project', task.project);
-    label.setAttribute('task-id', task.taskId);
+    const label = createCustomElement('label', ['task'], task.name, {
+      project: task.project,
+      'task-id': task.taskId,
+    });
     label.onclick = () => toggleClass('hidden', null, null, `.details-container[task-id=${task.taskId}]`);
 
     if (task.isCompleted) {
@@ -83,15 +78,38 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     return taskItem;
   };
   const _createTaskIcon = (className, fontAwesomeClass = null) => {
-    const icon = createCustomElement('i', className);
-    if (fontAwesomeClass) {
-      icon.classList.add('fa');
-      icon.classList.add(fontAwesomeClass);
-    }
+    const icon = createCustomElement('i', [className]);
+    if (fontAwesomeClass) icon.classList.add('fa', fontAwesomeClass);
     return icon;
   };
+  const _editTask = (task) => {
+    _toggleForm('edit-task-form');
+    const form = doc.getElementById('edit-task-form');
+    form.setAttribute('project', task.project);
+    form.setAttribute('task-id', task.taskId);
+    const details = task.getDetails();
+    // Prefill the form with task details
+    // eslint-disable-next-line no-restricted-syntax
+    for (const prop in details) {
+      if (details[prop]) {
+        doc.getElementById(`edit-${prop}`).value = prop === 'due'
+          ? new Date(details[prop]).toISOString().slice(0, 16)
+          : details[prop];
+      }
+    }
+  };
+  const _deleteTask = (container, task) => {
+    const projectName = doc
+      .querySelector(`label.task[task-id=${task.taskId}]`)
+      .getAttribute('project');
+    _updateNTasks(projectName, true);
+    storage.deleteTask(projectName, task.taskId);
+    // Removes divider
+    container.nextElementSibling.remove();
+    container.remove();
+  };
   const _createIconContainer = (container, task) => {
-    const iconContainer = createCustomElement('div', 'icon-container');
+    const iconContainer = createCustomElement('div', ['icon-container']);
     const iconObj = {
       'edit-task-btn': 'fa-pen-to-square',
       // 'move-project-btn': 'fa-arrow-right-from-bracket',
@@ -101,41 +119,18 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
       const [btnClass, fontAwesomeClass] = entry;
       const icon = _createTaskIcon(btnClass, fontAwesomeClass);
       if (btnClass === 'edit-task-btn') {
-        icon.onclick = () => {
-          _toggleForm('edit-task-form');
-          const form = doc.getElementById('edit-task-form');
-          form.setAttribute('project', task.project);
-          form.setAttribute('task-id', task.taskId);
-          const details = task.getDetails();
-          // Prefill the form with task details
-          // eslint-disable-next-line no-restricted-syntax
-          for (const prop in details) {
-            if (details[prop]) {
-              doc.getElementById(`edit-${prop}`).value = details[prop];
-            }
-          }
-        };
+        icon.onclick = _editTask.bind(this, task);
       } else if (btnClass === 'trash-btn') {
-        icon.onclick = () => {
-          const projectName = doc
-            .querySelector(`label.task[task-id=${task.taskId}]`)
-            .getAttribute('project');
-          _updateNTasks(projectName, true);
-          storage.deleteTask(projectName, task.taskId);
-          // Removes divider
-          container.nextElementSibling.remove();
-          container.remove();
-        };
+        icon.onclick = _deleteTask.bind(this, container, task);
       }
       iconContainer.appendChild(icon);
     });
     return iconContainer;
   };
   const _createTaskDivs = (task, taskContainer) => {
-    const container = createCustomElement('div', 'container');
-    container.setAttribute('task-id', task.taskId);
+    const container = createCustomElement('div', ['container'], null, { 'task-id': task.taskId });
 
-    const taskWrapper = createCustomElement('div', 'task-wrapper');
+    const taskWrapper = createCustomElement('div', ['task-wrapper']);
     taskWrapper.appendChild(_createTaskItem(task));
     taskWrapper.appendChild(_createIconContainer(container, task));
 
@@ -143,7 +138,7 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     container.appendChild(_createTaskDetails(task));
     taskContainer.appendChild(container);
 
-    taskContainer.appendChild(createCustomElement('hr', 'divider'));
+    taskContainer.appendChild(createCustomElement('hr', ['divider']));
   };
   const _highlightActive = (e) => {
     const active = e.target.matches('.project') ? e.target.parentNode : e.target;
@@ -189,18 +184,18 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     }
   };
   const _createProjectMenuContent = (projectName) => {
-    const content = createCustomElement('div', 'project-menu-content');
+    const content = createCustomElement('div', ['project-menu-content']);
     const edit = createCustomElement(
       'div',
-      'option',
+      ['option'],
       'Edit project',
-      'edit-option',
+      { id: 'edit-option' },
     );
     const del = createCustomElement(
       'div',
-      'option',
+      ['option'],
       'Delete project',
-      'delete-option',
+      { id: 'delete-option' },
     );
     edit.onclick = () => {
       _toggleForm('edit-project-form');
@@ -219,8 +214,8 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     return content;
   };
   const _createProjectMenu = (projectName) => {
-    const menu = createCustomElement('div', 'project-menu');
-    const btn = createCustomElement('div', 'project-menu-btn');
+    const menu = createCustomElement('div', ['project-menu']);
+    const btn = createCustomElement('div', ['project-menu-btn']);
     const content = _createProjectMenuContent(projectName);
 
     menu.onclick = () => toggleClass('show', null, content);
@@ -237,18 +232,23 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
     return menu;
   };
   const _createProjectWrapper = (project) => {
-    const wrapper = createCustomElement('div', 'project-wrapper');
-    const projectName = createCustomElement('div', 'project', project.name);
-    projectName.setAttribute('project-name', project.name);
+    const wrapper = createCustomElement('div', ['project-wrapper']);
+    const projectName = createCustomElement(
+      'div',
+      ['project'],
+      project.name,
+      null,
+      { 'project-name': project.name },
+    );
     projectName.addEventListener('click', _loadProjectTasks);
     wrapper.appendChild(projectName);
 
     const nTasks = createCustomElement(
       'div',
-      'n-tasks',
+      ['n-tasks'],
       project.length.toString(),
+      { 'project-name': project.name },
     );
-    nTasks.setAttribute('project-name', project.name);
     wrapper.appendChild(nTasks);
 
     wrapper.appendChild(_createProjectMenu(project.name));
@@ -393,9 +393,22 @@ import { toggleClass, createCustomElement, bindFormFunction } from './helper';
   (() => {
     _showDateOrg('Today');
     _initProjectForm('project', 'submit-project-btn', 'cancel-project-btn', 'project-form');
-    _initProjectForm('new-name', 'edit-project-btn', 'cancel-edit-project-btn', 'edit-project-form', false);
+    _initProjectForm(
+      'new-name',
+      'edit-project-btn',
+      'cancel-edit-project-btn',
+      'edit-project-form',
+      false,
+    );
     _initTaskForm('task', 'submit-task-btn', 'cancel-task-btn', 'project-list', 'task-form');
-    _initTaskForm('edit-name', 'edit-task-btn', 'cancel-edit-task-btn', 'edit-project', 'edit-task-form', false);
+    _initTaskForm(
+      'edit-name',
+      'edit-task-btn',
+      'cancel-edit-task-btn',
+      'edit-project',
+      'edit-task-form',
+      false,
+    );
     _initAccordion();
     _initDateOrg();
 

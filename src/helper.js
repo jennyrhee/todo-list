@@ -6,16 +6,21 @@ function toggleClass(className, id = null, element = null, query = null) {
 
 function createCustomElement(
   type = 'div',
-  className = null,
+  classes = null,
   content = null,
-  id = null,
+  attributes = null,
 ) {
   const element = document.createElement(type);
-  if (className) element.classList.add(className);
+  if (classes) element.classList.add(...classes);
   if (content) element.textContent = content;
-  if (id) element.setAttribute('id', id);
+  if (attributes) {
+    Object.entries(attributes).forEach((entry) => {
+      const [attr, value] = entry;
+      element.setAttribute(attr, value);
+    });
+  }
 
-  if (className === 'project-wrapper') {
+  if (classes && classes.includes('project-wrapper')) {
     if (
       document
         .getElementById('projects-accordion')
