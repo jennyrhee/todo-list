@@ -9,7 +9,6 @@ Live preview [here](https://jennyrhee.github.io/todo-list/).
 - CSS transitions
 - Modules
 - webpack and npm
-- Working in a code base for an extended period of time - because I added a decent amount of features and styling, this project took me a few weeks (on top of vacation and other life stuff).
 
 ## Future Work
 
